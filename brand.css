@@ -1,0 +1,270 @@
+/*
+ * Dobra AI-työpöytä: Dobra's own design system on top of the shell.
+ * Source: dobrafinland.fi theme variables (--gds-*), read 5.11.2026.
+ *   navy #0d2867 (primary, headings), blue #173e83, clear blue #1756b7 (secondary, "Miksi Dobra?" panel),
+ *   light gray #e2e9eb (borders), lightest gray #f1f7f7 (tinted cards and ground), dark gray #646464,
+ *   Clash Grotesk headings, Roboto body, 16px radius, pill buttons, no shadows.
+ * Contrast (AA 4.5:1): white on #0d2867 14.6:1, white on #1756b7 6.9:1, #0d2867 on #f1f7f7 13.7:1,
+ *   #1756b7 on white 6.9:1, #4a5a78 on white 6.9:1, #646464 on white 5.9:1.
+ * The shell lives in @layer wicflow and growth, so these unlayered rules win.
+ */
+:root,
+:root[data-theme='light'] {
+  --wf-font-sans: 'Roboto', system-ui, 'Segoe UI', Arial, sans-serif;
+  --wf-font-display: 'Clash Grotesk', 'ClashGrotesk', 'Roboto', system-ui, sans-serif;
+
+  --wf-text: #0d2867;
+  --wf-text-secondary: #4a5a78;
+  --wf-text-tertiary: #646464;
+
+  --wf-surface-page: #f1f7f7;
+  --wf-surface-sidebar: #ffffff;
+  --wf-surface-card: #ffffff;
+  --wf-surface-raised: #ffffff;
+  --wf-surface-inset: #f1f7f7;
+  --wf-surface-hover: #f1f7f7;
+  --wf-surface-selected: #e8eff9;
+  --wf-border: #e2e9eb;
+  --wf-border-subtle: #e2e9eb;
+
+  --wf-radius-card: 16px;
+  --wf-radius-card-lg: 16px;
+  --wf-shadow-1: none;
+  --wf-shadow-2: none;
+
+  --wf-action-primary: #0d2867;
+  --wf-action-primary-hover: #173e83;
+  --wf-action-primary-text: #ffffff;
+  --wf-action-secondary: #ffffff;
+  --wf-action-secondary-border: #0d2867;
+  --wf-action-secondary-hover: #f1f7f7;
+  --wf-action-secondary-text: #0d2867;
+
+  --wf-nav-text: #0d2867;
+  --wf-nav-icon: #1756b7;
+  --wf-nav-hover-bg: #f1f7f7;
+  --wf-nav-active-bg: #0d2867;
+  --wf-nav-active-text: #ffffff;
+  --wf-nav-active-icon: #ffffff;
+  --wf-shadow-nav-active: none;
+
+  --wf-accent: #1756b7;
+  --wf-accent-text: #1756b7;
+  --wf-accent-soft: #e8eff9;
+  --wf-accent-border: #b9cdeb;
+  --wf-link: #1756b7;
+  --wf-link-hover: #0d2867;
+  --wf-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #1756b7;
+  --wf-progress-fill: #1756b7;
+  --wf-avatar-bg: #e8eff9;
+  --wf-avatar-text: #0d2867;
+  --wf-status-info-bg: #e8eff9;
+  --wf-status-info-border: #b9cdeb;
+  --wf-status-info-dot: #1756b7;
+  --wf-status-info-text: #0d2867;
+}
+
+/* Type: Clash Grotesk for titles like dobrafinland.fi, Roboto everywhere else. */
+.wf-page-header__title,
+.wf-card__title,
+.wf-kpi__value,
+.growth-sheet__title,
+.brain-pipeline__title,
+.brain-section-title {
+  font-family: var(--wf-font-display);
+  font-weight: 600;
+  color: #0d2867;
+  letter-spacing: 0;
+}
+.wf-page-header__title { font-size: clamp(30px, 2.6vw, 40px); line-height: 1.15; }
+/* Their taglines ("TYÖNHAKIJALLE"): small caps in clear blue, not a mono label. */
+.wf-page-header__eyebrow {
+  font-family: var(--wf-font-sans);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: #1756b7;
+}
+.wf-button { font-family: var(--wf-font-sans); font-weight: 500; }
+.wf-button--secondary { border: 1px solid #0d2867; }
+.wf-card, .wf-kpi { border-color: #e2e9eb; }
+
+/* Sidebar: white like their header, larger logo, the brand icon at the foot. */
+.wf-brand__logo-image { height: 34px; width: auto; }
+.wf-nav__item { border-radius: 999px; }
+.dobra-side-icon { display: block; width: 92px; height: auto; margin: 0 auto 8px; }
+
+/* Avatars in their tint instead of the shell's gradient. */
+.brain-avatar { background: #e8eff9 !important; color: #0d2867 !important; }
+
+/* TÄNÄÄN HERO: their homepage hero (icon beside a big navy Clash title). */
+.dobra-hero {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 24px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.dobra-hero__icon { width: 112px; height: auto; grid-row: span 2; }
+.dobra-hero__eyebrow { margin: 0; font-weight: 700; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #1756b7; }
+.dobra-hero__title { margin: 0; font-family: var(--wf-font-display); font-weight: 700; font-size: clamp(32px, 3.4vw, 52px); line-height: 1.08; color: #0d2867; text-wrap: balance; }
+.dobra-hero__lead { grid-column: 1 / -1; margin: 6px 0 0; max-width: 72ch; font-size: 17px; line-height: 1.5; color: #173e83; }
+
+/* "Näytä nämä kolme": their "Miksi Dobra?" clear-blue panel. */
+.dobra-show {
+  border-radius: 16px;
+  background: #1756b7;
+  color: #ffffff;
+  padding: clamp(20px, 2.4vw, 32px);
+}
+.dobra-show__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; margin-bottom: 18px; }
+.dobra-show__title { margin: 0; font-family: var(--wf-font-display); font-weight: 600; font-size: clamp(22px, 2vw, 28px); color: #ffffff; }
+.dobra-show__note { margin: 0; font-size: 14px; color: #dbe6f6; }
+.dobra-show__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; list-style: none; margin: 0; padding: 0; }
+.dobra-step {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 18px; border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+.dobra-step__num { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: #ffffff; color: #0d2867; font-weight: 700; font-size: 14px; }
+.dobra-step__who { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #dbe6f6; }
+.dobra-step__title { margin: 0; font-family: var(--wf-font-display); font-weight: 600; font-size: 20px; line-height: 1.2; color: #ffffff; }
+.dobra-step__text { margin: 0; font-size: 15px; line-height: 1.45; color: #ffffff; }
+.dobra-step__time { display: flex; align-items: baseline; gap: 8px; margin: 2px 0 6px; font-size: 14px; color: #dbe6f6; }
+.dobra-step__time b { font-family: var(--wf-font-display); font-size: 24px; font-weight: 600; color: #ffffff; }
+.dobra-step__go {
+  margin-top: auto; align-self: flex-start;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 999px;
+  background: #ffffff; color: #0d2867; font-weight: 500; font-size: 15px; text-decoration: none;
+}
+.dobra-step__go:hover { background: #f1f7f7; color: #0d2867; }
+.dobra-step__go:focus-visible, .dobra-path a:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
+
+/* SHOW PATH: one slim strip on every other page, so the presenter always knows the next screen. */
+.dobra-path {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+  margin-bottom: 20px; padding: 10px 14px;
+  border-radius: 16px; background: #ffffff; border: 1px solid #e2e9eb;
+  font-size: 14px; color: #4a5a78;
+}
+.dobra-path__label { font-weight: 700; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #1756b7; margin-right: 4px; }
+.dobra-path ol { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
+.dobra-path a {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 999px;
+  color: #0d2867; text-decoration: none; border: 1px solid #e2e9eb; background: #f1f7f7;
+}
+.dobra-path a[aria-current='step'] { background: #0d2867; border-color: #0d2867; color: #ffffff; }
+.dobra-path a b { font-weight: 700; }
+.dobra-path__next { margin-left: auto; }
+.dobra-path__next a { background: #1756b7; border-color: #1756b7; color: #ffffff; }
+.dobra-path a:focus-visible { outline-color: #1756b7; }
+
+/* INTRO: their photo on top, one-line title, the three things to show. */
+#intro.growth-sheet { width: min(760px, calc(100vw - 32px)); max-width: none; padding: 0; overflow: auto; border-radius: 16px; }
+.dobra-intro__photo { display: block; width: 100%; height: 210px; object-fit: cover; object-position: 60% 55%; }
+.dobra-intro__body { padding: 24px 28px 28px; display: flex; flex-direction: column; gap: 14px; }
+.dobra-intro__top { display: flex; align-items: center; gap: 14px; }
+.dobra-intro__top img { height: 30px; width: auto; }
+.dobra-intro__title { margin: 0; font-family: var(--wf-font-display); font-weight: 700; font-size: clamp(26px, 3vw, 34px); line-height: 1.1; color: #0d2867; }
+.dobra-intro__lead { margin: 0; font-size: 16px; line-height: 1.5; color: #173e83; }
+.dobra-intro__steps { display: grid; gap: 10px; list-style: none; margin: 0; padding: 0; }
+.dobra-intro__steps a {
+  display: grid; grid-template-columns: 32px 1fr auto; gap: 4px 14px; align-items: center;
+  padding: 14px 16px; border-radius: 16px; background: #f1f7f7; color: #0d2867; text-decoration: none; border: 1px solid #e2e9eb;
+}
+.dobra-intro__steps a:hover { border-color: #1756b7; }
+.dobra-intro__steps .dobra-step__num { background: #0d2867; color: #ffffff; }
+.dobra-intro__steps strong { font-family: var(--wf-font-display); font-weight: 600; font-size: 18px; }
+.dobra-intro__steps span.t { grid-column: 2; font-size: 14px; color: #4a5a78; }
+.dobra-intro__steps span.m { grid-row: 1 / span 2; grid-column: 3; font-size: 14px; color: #1756b7; font-weight: 700; white-space: nowrap; }
+.dobra-intro__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.dobra-intro__fine { margin: 0; font-size: 13px; color: #646464; }
+.dobra-intro__close {
+  position: absolute; top: 12px; right: 12px;
+  display: grid; place-items: center; width: 40px; height: 40px; border-radius: 999px;
+  border: 0; background: #ffffff; color: #0d2867; cursor: pointer;
+}
+.dobra-intro__close:focus-visible { outline: 2px solid #1756b7; outline-offset: 2px; }
+#intro { position: fixed; }
+#intro.growth-sheet { max-height: calc(100dvh - 32px); margin: auto; }
+@media (max-height: 940px) {
+  .dobra-intro__photo { height: 150px; }
+  .dobra-intro__body { gap: 12px; padding-top: 20px; }
+  .dobra-intro__steps a { padding: 10px 16px; }
+}
+
+/* Sample-data note in the sidebar foot: Dobra tint instead of the shell's purple. */
+.growth-dev-badge { background: #e8eff9; border-color: #b9cdeb; color: #0d2867; }
+
+@media (max-width: 900px) {
+  .dobra-show__grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .dobra-hero { grid-template-columns: 1fr; }
+  .dobra-hero__icon { width: 76px; grid-row: auto; }
+  .dobra-intro__photo { height: 140px; }
+  .dobra-intro__body { padding: 18px; }
+  .dobra-intro__steps a { grid-template-columns: 28px 1fr; }
+  .dobra-intro__steps span.m { grid-row: auto; grid-column: 2; }
+  .dobra-path__next { margin-left: 0; }
+}
+
+/* SHOWCASE (5.11 late): agent run panel, source chips, recommendation, sidebar connections. Same Dobra system: 16px, pills, no shadows. */
+.dobra-agent { background: #ffffff; border: 1px solid #b9cdeb; border-radius: 16px; padding: 20px; display: grid; gap: 12px; }
+.dobra-agent__name { margin: 0; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #1756b7; }
+.dobra-agent__spark { width: 10px; height: 10px; border-radius: 50%; background: #b9cdeb; flex: none; }
+.dobra-agent__spark.is-on { background: #1756b7; animation: dobra-pulse 1s ease-in-out infinite; }
+@keyframes dobra-pulse { 50% { opacity: .35; transform: scale(.7); } }
+.dobra-agent__title { margin: 0; font-family: var(--wf-font-display); font-size: 22px; line-height: 1.2; font-weight: 600; color: #0d2867; }
+.dobra-agent__text { margin: 0; color: #4a5a78; max-width: 62ch; }
+.dobra-agent__bar { height: 8px; border-radius: 999px; background: #e8eff9; overflow: hidden; }
+.dobra-agent__bar span { display: block; height: 100%; background: #1756b7; border-radius: 999px; transition: width .5s ease; }
+.dobra-agent__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.dobra-agent__steps li { display: flex; align-items: center; gap: 10px; color: #646464; }
+.dobra-agent__steps li.is-now { color: #0d2867; font-weight: 600; }
+.dobra-agent__steps li.is-done { color: #0d2867; }
+.dobra-agent__mark { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 700; border: 1px solid #e2e9eb; background: #f1f7f7; color: #4a5a78; }
+.dobra-agent__mark svg { width: 14px; height: 14px; }
+.is-now .dobra-agent__mark { border-color: #1756b7; color: #1756b7; background: #ffffff; }
+.is-done .dobra-agent__mark { border-color: #1756b7; background: #1756b7; color: #ffffff; }
+.dobra-agent__fine { margin: 0; font-size: 13px; color: #646464; }
+@media (prefers-reduced-motion: reduce) { .dobra-agent__spark.is-on { animation: none; } .dobra-agent__bar span { transition: none; } }
+
+.dobra-srcchip { display: inline-flex; align-items: center; margin: 2px 0 2px 6px; padding: 1px 10px; border-radius: 999px; border: 1px solid #b9cdeb; background: #e8eff9; color: #173e83; font: 500 12px/1.6 var(--wf-font-sans); white-space: nowrap; vertical-align: 1px; }
+button.dobra-srcchip { cursor: pointer; }
+button.dobra-srcchip:hover, button.dobra-srcchip.is-on { background: #1756b7; border-color: #1756b7; color: #ffffff; }
+button.dobra-srcchip:focus-visible { outline: 2px solid #1756b7; outline-offset: 2px; }
+.dobra-srcchip--none { background: #ffffff; border-color: #e2e9eb; color: #646464; }
+.dobra-src { border-radius: 4px; transition: background-color .3s ease, box-shadow .3s ease; }
+.dobra-src.is-hit { background: #ffe58a; box-shadow: 0 0 0 3px #ffe58a; color: #0d2867; }
+
+.dobra-rec { display: flex; gap: 16px; align-items: flex-start; padding: 16px 20px; border-radius: 16px; background: #e8eff9; border: 1px solid #b9cdeb; }
+.dobra-rec__score { flex: none; min-width: 84px; padding: 10px 12px; border-radius: 12px; background: #0d2867; color: #ffffff; display: grid; justify-items: center; text-align: center; }
+.dobra-rec__score b { font-family: var(--wf-font-display); font-size: 26px; line-height: 1.1; font-weight: 600; }
+.dobra-rec__score span { font-size: 12px; opacity: .85; }
+.dobra-rec__body { min-width: 0; }
+.dobra-rec__title { margin: 0 0 8px; font-family: var(--wf-font-display); font-size: 18px; font-weight: 600; color: #0d2867; }
+.dobra-rec__why { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.dobra-rec__why li { position: relative; padding-left: 26px; color: #0d2867; }
+.dobra-rec__why li::before { position: absolute; left: 0; top: 1px; width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+.dobra-rec__why li.is-ok::before { content: '✓'; background: var(--wf-status-success-bg); color: var(--wf-status-success-text); border: 1px solid var(--wf-status-success-border); }
+.dobra-rec__why li.is-warn::before { content: '!'; background: var(--wf-status-warning-bg); color: var(--wf-status-warning-text); border: 1px solid var(--wf-status-warning-border); }
+@media (max-width: 560px) { .dobra-rec { flex-direction: column; } .dobra-rec__score { grid-auto-flow: column; gap: 8px; align-items: baseline; } }
+
+.dobra-conn { display: grid; gap: 6px; margin: 4px 0 0; padding: 12px 14px; border: 1px solid #e2e9eb; border-radius: 16px; background: #f1f7f7; color: #0d2867; text-decoration: none; font-size: 13px; }
+.dobra-conn:hover { border-color: #b9cdeb; background: #e8eff9; }
+.dobra-conn:focus-visible { outline: 2px solid #1756b7; outline-offset: 2px; }
+.dobra-conn__head { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #4a5a78; }
+.dobra-conn { gap: 4px; padding: 10px 14px; }
+.dobra-conn__head { display: flex; align-items: center; }
+.dobra-conn__list { font-size: 12px; line-height: 1.4; color: #0d2867; }
+.dobra-conn__tag { margin-left: auto; font-size: 11px; font-weight: 400; letter-spacing: 0; text-transform: none; color: #646464; border: 1px solid #e2e9eb; background: #ffffff; border-radius: 999px; padding: 0 8px; }
+
+/* 6.11: wide screens, the whole sidebar scrolls so the Tieto links are never hidden under the Yhteydet block. */
+@media (min-width: 1200px) {
+  .wf-sidebar__panel { overflow-y: auto; }
+  .wf-sidebar__panel > .wf-nav { flex: none; overflow: visible; }
+}

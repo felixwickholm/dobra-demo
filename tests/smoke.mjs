@@ -1,0 +1,75 @@
+import assert from 'node:assert/strict';
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const browser = await chromium.launch({headless:true});
+const page = await browser.newPage({viewport:{width:1440,height:1000}});
+const errors=[];
+page.on('pageerror', e=>errors.push(e.message));
+const base=process.env.DEMO_URL || 'http://127.0.0.1:8793/';
+const goto=async hash=>{await page.goto(base+'#'+hash); await page.locator('h1').waitFor();};
+try {
+ await goto('tanaan');
+ assert.match(await page.locator('h1').innerText(),/Johanna/);
+ assert.equal(await page.locator('dialog[open]').count(),0);
+ await page.locator('#active-person').selectOption('a');
+ assert.match(await page.locator('h1').innerText(),/Antti/);
+ await page.reload(); assert.match(await page.locator('h1').innerText(),/Antti/);
+ await goto('tekijat');
+ await page.locator('#worker-search').fill('Piotr');
+ await page.waitForFunction(()=>document.querySelectorAll('#tk-table tbody tr').length===1);
+ await page.getByRole('link',{name:'Piotr K.',exact:true}).click();
+ await page.getByRole('link',{name:/Takaisin tekijäpankkiin/}).first().click();
+ assert.equal(await page.locator('#worker-search').inputValue(),'Piotr');
+ await page.locator('#worker-search').fill('Puuttuva nimi');
+ await page.getByText('Ei tekijöitä näillä ehdoilla').waitFor();
+ await page.locator('#worker-search').fill('Mäki & Öhman + <test>');
+ assert.equal(await page.locator('#worker-search').inputValue(),'Mäki & Öhman + <test>');
+ await page.reload(); assert.equal(await page.locator('#worker-search').inputValue(),'Mäki & Öhman + <test>');
+ await goto('tekijat?kortit=30'); assert.equal(await page.locator('#tk-table tbody tr').count(),5);
+ await goto('arvoraportti');
+ const initial=await page.locator('#value-total').innerText();
+ await page.locator('[data-value-row="0"][data-value-col="0"]').fill('0');
+ assert.notEqual(await page.locator('#value-total').innerText(),initial);
+ await page.reload(); assert.equal(await page.locator('[data-value-row="0"][data-value-col="0"]').inputValue(),'0');
+ await page.locator('#value-reset').click(); assert.equal(await page.locator('#value-total').innerText(),initial);
+ await goto('kysy');
+ await page.locator('[data-ask-id]').first().click();
+ await page.waitForFunction(()=>document.querySelector('.brain-answer'));
+ await page.locator('#ask-in').fill('Mikä on kuun halkaisija?');
+ await page.locator('[data-ask-submit]').click(); await page.locator('#ask-fallback').waitFor();
+ for (const width of [1440,768,390,320]) {
+  await page.setViewportSize({width,height:900});
+  for(const route of ['tanaan','tekijat','asiakkaat','tekijat/piotr-k','asiakkaat/luodon-levytekniikka','pikatilaukset','hakemukset','liidit','tarjoukset','arvoraportti','liitannat','keksittya']) {
+   await goto(route);
+   assert.equal(await page.locator('h1').count(),1,route);
+   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+   assert.ok(overflow<=1,`${route} at ${width}: overflow ${overflow}`);
+  }
+ }
+ await page.setViewportSize({width:390,height:844});
+ await goto('tekijat');
+ assert.equal(await page.locator('.worker-filters').getAttribute('open'),null);
+ await page.locator('.worker-filters summary').click();
+ await page.locator('#fl-kaupunki').selectOption('Kokkola');
+ assert.ok((await page.locator('#tk-table tbody tr').count())<30);
+ await page.getByRole('button',{name:'Valikko',exact:true}).click();
+ await page.locator('[data-nav="tanaan"]').click();
+ await page.waitForFunction(()=>document.querySelector('h1')?.textContent.includes('Antti'));
+ assert.match(await page.locator('h1').innerText(),/Antti/);
+ await page.screenshot({path:'/tmp/dobra-final-mobile.png'});
+ await page.setViewportSize({width:1440,height:1000});
+ await page.locator('#active-person').selectOption('j');
+ await page.screenshot({path:'/tmp/dobra-final-desktop.png'});
+ await goto('arvoraportti');
+ await page.locator('[data-value-row="0"][data-value-col="0"]').fill('0');
+ await page.locator('#active-person').selectOption('a');
+ await goto('tanaan');
+ page.once('dialog', d=>d.accept());
+ await page.locator('.wf-sidebar [data-reset]').click();
+ await page.waitForLoadState('load');
+ await page.waitForFunction(()=>!JSON.parse(localStorage.getItem('dobra-demo:v3')).valueInputs && document.querySelector('h1')?.textContent.includes('Antti'));
+ assert.match(await page.locator('h1').innerText(),/Antti/);
+ await goto('arvoraportti');
+ assert.equal(await page.locator('[data-value-row="0"][data-value-col="0"]').inputValue(),'13');
+ assert.deepEqual(errors,[]);
+ console.log('PASS: persona persistence, search/escaping, filters/back links, calculator persistence, answers, mobile menu, 48 route/viewport checks.');
+} finally { await browser.close(); }

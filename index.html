@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Dobran työpöytä</title>
+<link rel="icon" href="img/dobra-logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@500,600,700&display=swap">
+
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="brain-parts.css">
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="workspace.css">
+<script src="data.js" defer></script>
+<script src="app.js" defer></script>
+<script src="flows.js" defer></script>
+<script src="registers.js" defer></script>
+</head>
+<body class="wf-body">
+<a class="skip-link" href="#wf-main">Siirry sisältöön</a>
+<div class="wf-app">
+  <aside class="wf-sidebar">
+    <div class="wf-sidebar__bar">
+      <a class="wf-brand wf-brand--logo" href="#tanaan" aria-label="Dobran työpöytä, Tänään">
+        <span class="wf-brand__logo"><img class="wf-brand__logo-image" src="img/dobra-logo.svg" alt="Dobra" width="451" height="226"></span>
+      </a>
+      <span class="wf-pill wf-pill--neutral" style="margin-left:auto">Demo</span>
+      <button class="wf-sidebar__toggle" type="button" popovertarget="wf-sidebar-panel" aria-label="Valikko">
+        <span class="wf-sidebar__toggle-open" data-icon="menu"></span>
+        <span class="wf-sidebar__toggle-close" data-icon="close"></span>
+      </button>
+    </div>
+    <div class="wf-sidebar__panel" id="wf-sidebar-panel" popover="auto">
+      <nav class="wf-nav" aria-label="Dobran työpöytä">
+        <button class="growth-go-to-trigger" type="button" id="go-to-open" aria-haspopup="dialog" aria-keyshortcuts="/">
+          <span data-icon="search"></span>
+          <span class="growth-go-to-trigger__text">Hae tai siirry</span>
+          <kbd class="growth-go-to-trigger__key">/</kbd>
+        </button>
+        <div class="wf-nav__section">
+          <p class="wf-nav__heading">Työt</p>
+          <ul class="wf-nav__list">
+            <li><a class="wf-nav__item" href="#tanaan" data-nav="tanaan"><span class="wf-nav__icon" data-icon="sun"></span><span class="wf-nav__label">Tänään</span></a></li>
+            <li><a class="wf-nav__item" href="#pikatilaukset" data-nav="pikatilaukset"><span class="wf-nav__icon" data-icon="zap"></span><span class="wf-nav__label">Pikatilaukset</span><span class="wf-nav__badge">1</span></a></li>
+            <li><a class="wf-nav__item" href="#hakemukset" data-nav="hakemukset"><span class="wf-nav__icon" data-icon="file"></span><span class="wf-nav__label">Hakemukset</span><span class="wf-nav__badge">6</span></a></li>
+            <li><a class="wf-nav__item" href="#liidit" data-nav="liidit"><span class="wf-nav__icon" data-icon="trend"></span><span class="wf-nav__label">Uudet asiakkaat</span></a></li>
+            <li><a class="wf-nav__item" href="#tarjoukset" data-nav="tarjoukset"><span class="wf-nav__icon" data-icon="euro"></span><span class="wf-nav__label">Tarjoukset</span><span class="wf-nav__badge">1</span></a></li>
+          </ul>
+        </div>
+        <div class="wf-nav__section">
+          <p class="wf-nav__heading">Rekisterit</p>
+          <ul class="wf-nav__list">
+            <li><a class="wf-nav__item" href="#tekijat" data-nav="tekijat"><span class="wf-nav__icon" data-icon="users"></span><span class="wf-nav__label">Tekijät</span></a></li>
+            <li><a class="wf-nav__item" href="#asiakkaat" data-nav="asiakkaat"><span class="wf-nav__icon" data-icon="building"></span><span class="wf-nav__label">Asiakkaat</span></a></li>
+          </ul>
+        </div>
+        <div class="wf-nav__section">
+          <p class="wf-nav__heading">Tieto</p>
+          <ul class="wf-nav__list">
+            <li><a class="wf-nav__item" href="#kysy" data-nav="kysy"><span class="wf-nav__icon" data-icon="ask"></span><span class="wf-nav__label">Kysy Dobralta</span></a></li>
+            <li><a class="wf-nav__item" href="#arvoraportti" data-nav="arvoraportti"><span class="wf-nav__icon" data-icon="chart"></span><span class="wf-nav__label">Ajansäästö</span></a></li>
+            <li><a class="wf-nav__item" href="#liitannat" data-nav="liitannat"><span class="wf-nav__icon" data-icon="plug"></span><span class="wf-nav__label">Liitännät</span></a></li>
+            <li><a class="wf-nav__item" href="#keksittya" data-nav="keksittya"><span class="wf-nav__icon" data-icon="info"></span><span class="wf-nav__label">Tietoa demosta</span></a></li>
+          </ul>
+        </div>
+      </nav>
+      <button class="wf-button wf-button--ghost wf-button--sm" type="button" data-reset>Aloita alusta</button>
+    </div>
+  </aside>
+
+  <main class="wf-main" id="wf-main" tabindex="-1">
+    <div class="wf-main__inner">
+      <div class="workspace-bar">
+        <span class="workspace-bar__scope">Dobran työpöytä <span class="workspace-bar__date">10.11.2026</span></span>
+        <div class="workspace-bar__tools">
+          <label class="person-switch" for="active-person"><span>Näytä henkilönä</span><select id="active-person"><option value="j">Johanna Gräsbeck</option><option value="a">Antti Flander</option></select></label>
+          <button class="wf-button wf-button--ghost wf-button--sm" type="button" data-tour-start>Opastettu kierros</button>
+        </div>
+      </div>
+      <div id="path-slot"></div>
+      <div id="tour-slot"></div>
+      <section data-route="tanaan" hidden></section>
+      <section data-route="pikatilaukset" hidden></section>
+      <section data-route="hakemukset" hidden></section>
+      <section data-route="liidit" hidden></section>
+      <section data-route="tarjoukset" hidden></section>
+      <section data-route="tekijat" hidden></section>
+      <section data-route="asiakkaat" hidden></section>
+      <section data-route="kysy" hidden></section>
+      <section data-route="arvoraportti" hidden></section>
+      <section data-route="liitannat" hidden></section>
+      <section data-route="keksittya" hidden></section>
+    </div>
+  </main>
+</div>
+
+<dialog class="growth-go-to" id="go-to" aria-label="Hae tai siirry">
+  <div class="growth-go-to__panel">
+    <form class="growth-go-to__box" id="go-to-form" role="search">
+      <span data-icon="search"></span>
+      <input class="growth-go-to__input" id="ask-top" type="search" autocomplete="off" placeholder="Kysy Dobralta tai siirry näkymään" aria-label="Kysy Dobralta tai siirry näkymään" aria-controls="go-to-list">
+      <button class="growth-go-to__close" type="button" id="go-to-close" aria-label="Sulje"><span data-icon="close"></span></button>
+    </form>
+    <ul class="growth-go-to__list" id="go-to-list" role="listbox" aria-label="Tulokset"></ul>
+    <p class="growth-go-to__hint">Enter avaa, nuolet valitsevat, Esc sulkee. Kysymys menee Kysy Dobralta -näkymään.</p>
+  </div>
+</dialog>
+
+<dialog class="growth-sheet" id="intro" aria-labelledby="intro-title"></dialog>
+<script src="swipecue.js" defer></script>
+</body>
+</html>
