@@ -1,0 +1,103 @@
+/* Application review: one candidate, two readable documents, then a clear next step. */
+.applications-screen {
+  --application-ink: #20314b;
+  --application-muted: #5d6977;
+  --application-line: #dce4e8;
+  --application-blue: #174d87;
+  --application-blue-soft: #edf5fc;
+  --application-green: #286445;
+  --application-green-soft: #eef7f1;
+  --application-amber: #805314;
+  --application-amber-soft: #fff6e6;
+  display: grid;
+  gap: 32px;
+  color: var(--application-ink);
+}
+.applications-screen h2, .applications-screen h3, .applications-screen h4, .applications-screen p { margin: 0; }
+.application-picker > header { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 16px; }
+.application-picker h2 { font-size: 18px; font-weight: 600; }
+.application-picker header p, .application-picker header > span { font-size: 13px; line-height: 1.6; color: var(--application-muted); }
+.application-candidates { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+.application-candidate { appearance: none; display: flex; align-items: flex-start; gap: 12px; width: 100%; min-width: 0; padding: 16px; text-align: left; font: inherit; color: var(--application-ink); background: white; border: 1px solid var(--application-line); border-radius: 10px; cursor: pointer; }
+.application-candidate.is-selected { border-color: var(--application-blue); background: var(--application-blue-soft); box-shadow: inset 0 0 0 1px var(--application-blue); }
+.application-candidate .wf-avatar { flex: 0 0 auto; }
+.application-candidate__body { display: grid; gap: 5px; flex: 1; min-width: 0; }
+.application-candidate strong { font-weight: 600; font-size: 15px; line-height: 1.35; }
+.application-candidate__body > span { font-size: 13px; line-height: 1.45; }
+.application-candidate small { font-size: 12px; line-height: 1.45; color: var(--application-muted); }
+.application-candidate__mark { color: var(--application-blue); flex: 0 0 16px; width: 16px; }
+.application-candidate__mark svg { width: 16px; height: 16px; }
+.application-candidate:focus-visible { outline: 3px solid #6aa1d8; outline-offset: 3px; }
+.application-candidate:active { background: #e0edf9; }
+@media (hover:hover) and (pointer:fine) { .application-candidate:hover { border-color: #7494b3; } }
+.application-workspace { display: grid; gap: 28px; scroll-margin-top: 24px; }
+#f2-detail { scroll-margin-top: 24px; }
+.application-workspace__header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.application-workspace__header h2 { font-size: 26px; line-height: 1.25; font-weight: 600; color: #0d2867; margin-bottom: 6px; }
+.application-workspace__header p { font-size: 14px; color: var(--application-muted); line-height: 1.6; }
+.application-workspace__header a { color: var(--application-blue); font-size: 13px; text-underline-offset: 3px; }
+.application-documents { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 24px; align-items: start; }
+.application-panel { background: white; border: 1px solid var(--application-line); border-radius: 12px; overflow: hidden; min-width: 0; }
+.application-panel__header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; padding: 24px 28px; border-bottom: 1px solid var(--application-line); }
+.application-documents .application-panel__header { display: block; }
+.application-panel__header h3 { font-size: 18px; line-height: 1.4; font-weight: 600; }
+.application-panel__header p { font-size: 14px; line-height: 1.65; color: var(--application-muted); margin-top: 8px; max-width: 55ch; }
+.application-panel__body { padding: 28px; }
+.application-original .application-panel__header { background: #f3f5f6; }
+.application-original__body { padding: 28px; font-size: 15px; line-height: 1.8; color: var(--application-ink); overflow-wrap: anywhere; }
+.application-cv-line + .application-cv-line { margin-top: 14px; }
+.application-cv-line:first-child { font-size: 17px; font-weight: 600; margin-bottom: 24px; }
+.application-original .dobra-src { scroll-margin-block: 32px; }
+.application-summary .application-panel__header { background: var(--application-blue-soft); }
+.application-summary .application-panel__header h3 { color: var(--application-blue); }
+.application-fields { margin: 0; padding: 4px 28px; }
+.application-field { padding: 22px 0; }
+.application-field + .application-field { border-top: 1px solid #e8edf0; }
+.application-field dt { font-size: 13px; line-height: 1.5; color: var(--application-muted); font-weight: 500; margin-bottom: 7px; }
+.application-field dd { font-size: 16px; line-height: 1.65; font-weight: 500; color: var(--application-ink); margin: 0; max-width: 46ch; overflow-wrap: anywhere; }
+.application-field__source { margin-top: 10px; }
+.application-fields .dobra-srcchip { display: inline-flex; align-items: center; min-height: 30px; margin: 0; font-size: 12px; line-height: 1.4; padding: 5px 9px; }
+.application-fields button.dobra-srcchip { color: var(--application-blue); background: var(--application-blue-soft); }
+.application-fields button.dobra-srcchip:focus-visible { outline: 2px solid var(--application-blue); outline-offset: 2px; }
+.application-recommendation .application-panel__header { background: var(--application-green-soft); }
+.application-recommendation .application-panel__header h3 { color: var(--application-green); }
+.application-recommendation__decision { font-size: 20px; line-height: 1.5; font-weight: 600; max-width: 60ch; }
+.application-recommendation__reason { margin-top: 10px !important; font-size: 15px; line-height: 1.7; }
+.application-check { padding: 18px 20px; border-radius: 8px; background: var(--application-amber-soft); color: var(--application-amber); margin-top: 24px; }
+.application-check strong { font-size: 14px; line-height: 1.5; }
+.application-check p { margin-top: 6px; max-width: 80ch; font-size: 15px; line-height: 1.7; }
+.application-check--neutral { color: var(--application-ink); background: #f3f5f6; }
+.application-matches { display: grid; gap: 20px; margin-top: 28px; max-width: 720px; }
+.applications-screen h4 { font-size: 14px; line-height: 1.5; font-weight: 600; }
+.application-matches .wf-progress__header { gap: 16px; }
+.application-matches .wf-progress__label { font-size: 14px; }
+.application-message .application-panel__header { background: var(--application-blue-soft); }
+.application-message__text { font-size: 16px; line-height: 1.85; max-width: 72ch; color: var(--application-ink); }
+.application-message__translation { margin-top: 28px; padding: 20px; border-radius: 8px; background: #f3f5f6; max-width: 76ch; }
+.application-message__translation p { font-size: 15px; line-height: 1.75; margin-top: 10px; }
+.application-message__actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 20px; border-top: 1px solid var(--application-line); padding-top: 24px; margin-top: 28px; }
+.application-message__actions .wf-button { min-height: 44px; font-size: 14px; }
+.application-message__actions > span { font-size: 13px; line-height: 1.65; color: var(--application-muted); }
+@media (max-width:1000px) {
+  .application-documents { grid-template-columns: minmax(0,1fr); }
+  .application-candidates { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width:600px) {
+  .applications-screen, .application-workspace { gap: 24px; }
+  .application-picker > header { align-items: flex-start; gap: 10px; flex-direction: column; }
+  .application-candidates { gap: 8px; }
+  .application-candidate { padding: 12px; gap: 8px; }
+  .application-candidate .wf-avatar, .application-candidate__mark { display: none; }
+  .application-candidate strong { font-size: 14px; }
+  .application-candidate__body > span { font-size: 12px; }
+  .application-candidate small { font-size: 11px; }
+  .application-panel__header, .application-panel__body, .application-original__body { padding: 20px; }
+  .application-fields { padding-inline: 20px; }
+  .application-field { padding-block: 20px; }
+  .application-recommendation__decision { font-size: 18px; }
+  .application-check { padding: 16px; }
+  .application-message__translation { padding: 16px; }
+  .application-message__actions .wf-button { width: 100%; }
+}
+/* Sources are metadata, separate from the translated field value. */
+.application-field dd.application-field__source { margin-top: 10px; line-height: 1.4; font-weight: 400; }

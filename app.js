@@ -118,6 +118,7 @@
     {id:'tanaan', title:'Tänään', section:'Työt', icon:'sun', detail:'Aamun lista, yön loki ja tämän viikon luvut'},
     {id:'pikatilaukset', title:'Pikatilaukset', section:'Työt', icon:'zap', detail:'Asiakkaan tilauksesta vahvistettuihin vuoroihin', subtitle:'Tarkista tilaus, valitse sopivat tekijät ja valmistele vahvistus asiakkaalle.'},
     {id:'hakemukset', title:'Hakemukset', section:'Työt', icon:'file', detail:'Hakemukset luettuna suomeksi', subtitle:'Jokainen hakemus luetaan, käännetään ja verrataan avoimiin paikkoihin.'},
+    {id:'myynti', title:'Myynnin näkymä', section:'Myynti', icon:'chart', detail:'Myyntiputki, kehitys ja seuraavat yhteydenotot'},
     {id:'liidit', title:'Uudet asiakkaat', section:'Työt', icon:'trend', detail:'Uudet asiakasyritykset ja signaalit', subtitle:'Löydä yritykset, joilla on rekrytointitarve, ja valmistele ensimmäinen yhteydenotto.'},
     {id:'tarjoukset', title:'Tarjoukset', section:'Työt', icon:'euro', detail:'Tarjouspyynnöstä tarjousluonnos', subtitle:'"Pyydä ilmainen tarjous" -lomakkeesta valmis luonnos minuuteissa.'},
     {id:'tekijat', title:'Tekijät', section:'Rekisterit', icon:'users', detail:'Tekijäpankki: kortit, keikat, kielet ja majoitus', subtitle:'Saatavuus, osaaminen ja pätevyydet samassa paikassa.'},
@@ -235,14 +236,14 @@
       const n = Math.max(0, 6 - new Set(S.f2sent || []).size);
       const kpis = a ? [
         {label:'Tarjouspyyntöjä', value:'1', foot:S.f4?.sent ? 'luonnos valmis tarkistettavaksi' : 'luonnos valmistelematta'},
-        {label:'Asiakkaita', value:String(CLIENTS.length), foot:'asiakasrekisterissä'},
+        {label:'Yrityksiä rekisterissä', value:String(CLIENTS.length), foot:'asiakkaat ja prospektit'},
         {label:'Tekijöitä asiakkailla', value:String(WORKERS.filter(w => w.a).length), foot:'voimassa olevat keikat'}
       ] : [
         {label:'Avoin henkilöstötarve', value:S.f1?.mailed ? '0' : '3 tekijää', foot:'Pohjan Teräsrakenne'},
         {label:'Hakemuksia käsiteltävänä', value:String(n), foot:'yön aikana saapuneet'},
         {label:'Kortteja vanhenee pian', value:String(certSoon().length), foot:'seuraavan 30 päivän aikana'}
       ];
-      body.innerHTML = `${ui.kpis(kpis)}
+      body.innerHTML = `${ui.kpis(kpis)}${a && D.salesSummary ? D.salesSummary() : ''}
         <div class="morning-columns">
           ${ui.card({title:'Aloita näistä', meta:`${todo.length} tehtävää`, body:ui.items(todo), cls:'morning-tasks'})}
           ${ui.card({title:'Tarkista vielä', body:ui.items(needs), cls:'morning-attention'})}
@@ -396,37 +397,56 @@
     }
   };
 
-  /* KIERROS: 12 askelta, each asks for one click. [route, title, text, try, before] */
+  /* The guide stays in the page, so the visitor can try every workflow. */
   const setRole = r => { S.role = r; save(); };
   const tour = [
-    ['tanaan', 'Tänään', 'Joka aamu yksi näkymä: mitä tuli yöllä, mikä on kiireellistä ja mitä Tekoäly teki ennen kuin toimisto aukesi.', 'paina ensimmäisen tehtävän "Etsi tilaukseen tekijät".', () => setRole('j')],
-    ['pikatilaukset', 'Pikatilaus täyteen', 'Asiakkaan sähköposti luetaan, sopivat tekijät löytyvät pätevyyksien ja sijainnin mukaan, ja viestit valmistellaan jokaisen omalla kielellä.', 'paina "Etsi sopivat työntekijät" ja katso, miten agentti käy tekijät läpi.'],
-    ['tekijat?rooli=Hitsaaja', 'Tekijäpankki', 'Kortit, keikat, kielet ja majoitus samassa listassa. Suodata tekijöitä saatavuuden, osaamisen ja sijainnin mukaan.', 'valitse Saatavuus: Vapautuu ennen joulua.'],
-    ['tekijat/piotr-k', 'Tekijäkortti', 'Yksi sivu tekijästä: nykyinen keikka, vanheneva tulityökortti, palaute, majoitus ja asiakirjat.', 'avaa nykyinen asiakas Luodon Levytekniikka.'],
-    ['hakemukset', 'Hakemukset suomeksi', 'Puolan-, ruotsin-, romanian- ja englanninkieliset hakemukset luetaan, puuttuvat kortit näkyvät heti ja kutsu on valmiina hakijan kielellä.', 'paina "Käsittele hakemukset", avaa Sara N. ja klikkaa lähdettä CV, rivi 3.'],
-    ['kysy', 'Kysy Dobralta', 'Yksi kysymys koko aineistolle, omin sanoin tai valmiista listasta. Vastaus kertoo, mistä järjestelmästä kukin tieto tuli. Jos vastausta ei ole, Tekoäly sanoo sen eikä arvaa.', 'paina "Kenen tulityökortti vanhenee tässä kuussa?".'],
-    ['liidit', 'Uudet asiakkaat Antille', 'Tekoäly seuraa työpaikkailmoituksia, uutisia ja tilinpäätöksiä Pohjanmaalla. Jokaisella signaalilla on lähdeteksti ja syyt, miksi se sopii Dobralle.', 'paina "Etsi potentiaaliset asiakkaat" ja avaa Vaasan Akselitekniikka.'],
-    ['asiakkaat', 'Asiakasrekisteri', 'Keikalla olevat tekijät, päättymispäivät, tämän vuoden tilaukset ja muistiinpanot asiakkaittain.', 'avaa Luodon Levytekniikka.'],
-    ['tanaan', 'Antin aamu', 'Toimitusjohtajalla on oma Tänään: liidit, avoin tarjous ja asiakkaat, joille kannattaa soittaa.', 'vaihda yläreunan henkilövalinnasta takaisin Johannaan.', () => setRole('a')],
-    ['tarjoukset', 'Tarjouspyynnöstä tarjous', 'Lomakkeelta tullut pyyntö muuttuu luonnokseksi, jossa on hinnat ja vapaat ehdokkaat. Antti tarkistaa hinnat, ehdot ja saatavuuden ennen lähettämistä.', 'paina "Laadi tarjousluonnos".'],
-    ['arvoraportti', 'Arvoraportti', 'Muokkaa työmäärää ja käsittelyaikoja. Viikoittainen ajansäästö lasketaan näkyviin heti.', 'avaa sivupalkista Liitännät ja katso, mitä kytkettäisiin.'],
-    ['keksittya', 'Tietoa demosta', 'Mikä toimii demossa, mikä on simuloitu ja miten tämä liitettäisiin Dobran sähköpostiin, tekstiviesteihin, Teamtailoriin ja palkanlaskentaan.', 'paina "Aloita alusta", kun haluat aloittaa alusta.'],
+    ['tanaan', 'Aloita päivä yhdestä näkymästä', 'Johanna näkee kiireelliset henkilöstötarpeet, uudet hakemukset ja tarkistettavat asiat heti aamulla.', 'Avaa päivän ensimmäinen henkilöstötarve. Näet asiakkaan tilauksen ja sopivat seuraavat toimet.', () => setRole('j'), 'Johannan työpäivä'],
+    ['pikatilaukset', 'Löydä tilaukseen sopivat tekijät', 'Vertaa osaamista, saatavuutta ja pätevyyksiä. Tarkista myös majoitus ennen kuin vahvistat tekijän asiakkaalle.', 'Valitse ”Etsi sopivat työntekijät”. Vertaa ehdokkaita ja valmistele saatavuuskysely.', null, 'Johannan työpäivä'],
+    ['tekijat?rooli=Hitsaaja', 'Rajaa tekijät asiakkaan tarpeeseen', 'Saatavuus, sijainti ja osaaminen kulkevat mukana samassa rekisterissä. Suodattimet auttavat löytämään oikeat ehdokkaat.', 'Valitse saatavuudeksi ”Vapautuu ennen joulua”. Avaa sitten Piotr K:n tekijäkortti.', null, 'Johannan työpäivä'],
+    ['tekijat/piotr-k', 'Katso tekijän koko tilanne', 'Nykyinen keikka, pätevyydet, kielet ja majoitus löytyvät yhdeltä sivulta. Vanhenevat kortit erottuvat heti.', 'Tarkista Piotrin tulityökortin voimassaolo ja avaa nykyinen asiakas, Luodon Levytekniikka.', null, 'Johannan työpäivä'],
+    ['hakemukset', 'Lue hakemus selkeänä yhteenvetona', 'Alkuperäinen CV ja suomenkielinen yhteenveto näkyvät rinnakkain. Jokaisen tiedon lähteen voi tarkistaa ennen päätöstä.', 'Käsittele hakemukset ja valitse Marek Z. Paina yhteenvedon lähdelinkkiä: oikea rivi korostuu CV:ssä.', null, 'Johannan työpäivä'],
+    ['kysy', 'Kysy ja tarkista vastauksen lähde', 'Hae tietoa tekijöistä ja asiakkaista yhdellä kysymyksellä. Vastauksen yhteydessä näkyy, mihin tieto perustuu.', 'Valitse kysymys tässä kuussa vanhenevista tulityökorteista. Avaa vastauksesta tekijän tiedot.', null, 'Johannan työpäivä'],
+    ['myynti', 'Näe myynnin suunta yhdellä silmäyksellä', 'Antin näkymä kokoaa myynnin kehityksen, avoimet mahdollisuudet ja seuraavat yhteydenotot. Värit erottavat myynnin vaiheet.', 'Vertaa ajanjaksoja ja avaa myyntiputkesta kiinnostava yritys.', () => setRole('a'), 'Antin myyntityö'],
+    ['liidit', 'Muuta havaittu tarve yhteydenotoksi', 'Asiakasmahdollisuuden mukana kulkevat lähdeteksti, perustelut ja viestiluonnos. Tarkista tarve ennen yhteydenottoa.', 'Valitse ”Etsi potentiaaliset asiakkaat”. Avaa Vaasan Akselitekniikka ja tarkista viestiluonnos.', null, 'Antin myyntityö'],
+    ['asiakkaat', 'Pidä asiakkaat ja mahdollisuudet järjestyksessä', 'Yrityskortti kokoaa yhteydenotot, avoimet asiat ja asiakkaalla työskentelevät tekijät. Rekisterissä on eri toimialojen yrityksiä.', 'Hae yritystä nimellä. Avaa sen kortti ja tarkista seuraava tehtävä.', null, 'Antin myyntityö'],
+    ['tarjoukset', 'Valmistele tarjous tarkistettavaksi', 'Tarjouspyynnön tiedot, hinnat ja vapaat ehdokkaat muodostavat yhden luonnoksen. Antti tarkistaa ehdot ennen lähettämistä.', 'Valitse ”Laadi tarjousluonnos”. Tarkista työntekijät, tuntihinnat ja aloituspäivä.', null, 'Antin myyntityö'],
+    ['tanaan', 'Vaihda näkökulmaa kesken demon', 'Johannalla ja Antilla on omat aamun tehtävänsä. Henkilövalinta pysyy näkyvissä jokaisella sivulla.', 'Vaihda yläreunan henkilövalinnasta Johannaan ja takaisin Anttiin. Aamun tehtävät vaihtuvat mukana.', () => setRole('a'), 'Yhteinen työpöytä'],
+    ['arvoraportti', 'Arvioi hyöty omilla työmäärillä', 'Muokkaa tehtävien määriä ja käsittelyaikoja. Laskuri näyttää, kuinka paljon aikaa työviikosta voisi vapautua.', 'Muuta yhtä viikoittaista työmäärää ja katso, miten ajansäästö muuttuu.', null, 'Yhteinen työpöytä'],
+    ['tanaan', 'Nyt voit kokeilla omaa työpäivää', 'Avaa tilaus, käsittele hakemus tai tutki myyntiputkea. Voit palata kierrokseen milloin tahansa yläreunan painikkeesta.', 'Valitse haluamasi henkilö ja aloita tehtävästä, joka vastaa omaa työtäsi.', null, 'Kierros valmis'],
   ];
   D.tour = tour;
   function renderTour(){
     const slot = $('#tour-slot'); if(!slot) return;
     const i = S.tour;
+    $$('[data-tour-highlight]').forEach(el => el.removeAttribute('data-tour-highlight'));
+    $$('[data-tour-start]').forEach(b => b.textContent = typeof i === 'number' ? 'Näytä kierros' : S.tourLast > 0 ? 'Jatka kierrosta' : 'Opastettu kierros');
     if(typeof i !== 'number' || !tour[i]) { slot.innerHTML = ''; return; }
-    const t = tour[i], last = i === tour.length - 1;
-    slot.innerHTML = ui.notice({tone:'info', attrs:'role="status" aria-live="polite" id="tour"', title:`Kierros ${i + 1} / ${tour.length}: ${t[1]}`, text:`<p>${t[2]}</p><p><b>Kokeile:</b> ${t[3]}</p>`,
-      actions: `${ui.button({label:'Edellinen', attrs:`data-tour-go="${i - 1}"${i === 0 ? ' disabled' : ''}`})}${ui.button({label: last ? 'Valmis' : 'Seuraava', variant:'primary', attrs:`data-tour-go="${last ? -1 : i + 1}"`})}${last ? '' : ui.button({label:'Lopeta kierros', variant:'ghost', attrs:'data-tour-go="-1"'})}`});
+    const t = tour[i], last = i === tour.length - 1, compact = !!S.tourCompact;
+    const targets = ['.morning-tasks','#f1-find','.worker-filters','.wf-page-header','#f2-go','[data-ask-id]','.sales-overview','#f3-go','#client-search','#f4-go','#active-person','#value-total','.morning-tasks'];
+    if(parseHash().route === t[0].split(/[/?]/)[0]) { const target = $(targets[i]) || $('section[data-route]:not([hidden]) [data-body]'); target?.setAttribute('data-tour-highlight',''); }
+    let instruction = t[3];
+    if(i === 4 && S.f2run) instruction = 'Valitse Marek Z. ja vertaa yhteenvetoa alkuperäiseen CV:hen. Lähdelinkki korostaa oikean rivin.';
+    if(i === 1 && S.f1?.found) instruction = 'Ehdokkaat on jo haettu. Vertaa heidän saatavuuttaan ja tarkista tilauksen seuraava vaihe.';
+    if(i === 7 && S.f3?.run) instruction = 'Avaa Vaasan Akselitekniikka. Tarkista lähdeteksti, viestiluonnos ja myyntiputken vaihe.';
+    if(i === 9 && S.f4?.draft) instruction = 'Tarjousluonnos on jo valmisteltu. Tarkista työntekijät, tuntihinnat ja aloituspäivä.';
+    slot.innerHTML = `<aside class="tour-guide${compact ? ' is-compact' : ''}" aria-labelledby="tour-title">
+      <div class="tour-guide__top"><span class="tour-guide__eyebrow">Opastettu kierros <span>·</span> ${h(t[5])} <span class="tour-guide__person">${S.role === 'a' ? 'Antti' : 'Johanna'}</span></span><div class="tour-guide__tools"><button type="button" data-tour-toggle aria-expanded="${!compact}" aria-controls="tour-content">${compact ? 'Avaa opastus' : 'Pienennä'}</button><button type="button" data-tour-go="-1" aria-label="Sulje kierros">${icon('close')}</button></div></div>
+      <div class="tour-guide__heading"><span class="tour-guide__number" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><h2 id="tour-title" tabindex="-1">${h(t[1])}</h2><span class="tour-guide__count">${i+1} / ${tour.length}</span></div>
+      <div id="tour-content"${compact ? ' hidden' : ''}><div class="tour-guide__body"><p>${h(t[2])}</p><div class="tour-guide__task"><strong>Kokeile itse</strong><p>${h(instruction)}</p><button type="button" class="tour-guide__open" data-tour-open>Näytä vaihe sivulla ${icon('arrow')}</button></div></div></div>
+      <div class="tour-guide__footer"><label for="tour-step">Siirry vaiheeseen<select id="tour-step">${tour.map((step,n)=>`<option value="${n}"${n===i ? ' selected' : ''}>${n+1}. ${h(step[1])}</option>`).join('')}</select></label><div class="tour-guide__buttons">${ui.button({label:'Edellinen',attrs:`data-tour-go="${i-1}"${i===0 ? ' disabled' : ''}`})}${ui.button({label:last ? 'Päätä kierros' : 'Seuraava vaihe',variant:'primary',attrs:`data-tour-go="${last ? -1 : i+1}"`})}</div></div>
+      <div class="tour-guide__progress" role="progressbar" aria-label="Kierroksen eteneminen" aria-valuemin="0" aria-valuemax="${tour.length}" aria-valuenow="${i+1}"><span style="width:${(i+1)/tour.length*100}%"></span></div>
+    </aside>`;
+    $('#tour-step').addEventListener('change', e => tourGo(Number(e.target.value)));
   }
   function tourGo(i){
-    if(i < 0 || !tour[i]){ delete S.tour; save(); renderTour(); return; }
-    S.tour = i; save();
+    if(i < 0 || !tour[i]){
+      if(typeof S.tour === 'number') S.tourLast = S.tour === tour.length-1 ? 0 : S.tour;
+      delete S.tour; save(); renderTour(); $('[data-tour-start]')?.focus(); return;
+    }
+    S.tour = i; S.tourLast = i; S.tourCompact = false; save();
     const t = tour[i]; if(t[4]) t[4]();
     go(t[0]);
-    const m = $('#wf-main'); if(m) m.scrollTop = 0; window.scrollTo(0, 0);
+    requestAnimationFrame(() => { $('#tour-title')?.focus({preventScroll:true}); $('#tour-slot')?.scrollIntoView({block:'start'}); });
   }
   D.tourGo = tourGo;
 
@@ -468,14 +488,16 @@
   /* EVENTS */
   function bind(){
     document.addEventListener('click', e => {
-      const t = e.target.closest('[data-reset],[data-tour-start],[data-tour-go],[data-ask-id],[data-ask-q],[data-intro-close],[data-intro-tour],[data-go-i],#go-to-open,#go-to-close');
+      const t = e.target.closest('[data-reset],[data-tour-start],[data-tour-go],[data-tour-toggle],[data-tour-open],[data-ask-id],[data-ask-q],[data-intro-close],[data-intro-tour],[data-go-i],#go-to-open,#go-to-close');
       if(!t) {
         const navA = e.target.closest('.wf-nav__item');
         if(navA){ const p = $('#wf-sidebar-panel'); try { if(p.matches(':popover-open')) p.hidePopover(); } catch(x) {} }
         return;
       }
       if(t.matches('[data-reset]')) return resetDemo(e);
-      if(t.matches('[data-tour-start]')) { closeIntro(); return tourGo(0); }
+      if(t.matches('[data-tour-start]')) { closeIntro(); return tourGo(typeof S.tour === 'number' ? S.tour : S.tourLast || 0); }
+      if(t.matches('[data-tour-toggle]')) { S.tourCompact = !S.tourCompact; save(); renderTour(); $('[data-tour-toggle]')?.focus(); return; }
+      if(t.matches('[data-tour-open]')) { S.tourCompact = true; save(); go(tour[S.tour][0]); requestAnimationFrame(() => { const sec = $('section[data-route]:not([hidden])'); const target = $('[data-tour-highlight]') || sec; target?.scrollIntoView({block:'center'}); const title = $('h1', sec); title?.setAttribute('tabindex','-1'); title?.focus({preventScroll:true}); }); return; }
       if(t.matches('[data-tour-go]')) return tourGo(+t.dataset.tourGo);
       if(t.matches('[data-ask-id]')) { e.preventDefault(); const a = ANSWERS.find(x => x.id === t.dataset.askId); return ask(a.q, a.id); }
       if(t.matches('[data-ask-q]')) { e.preventDefault(); return ask(t.dataset.askQ); }
@@ -496,6 +518,10 @@
     $('#go-to-form').addEventListener('submit', e => { e.preventDefault(); runGo(goActive); });
     document.addEventListener('keydown', e => {
       const tag = (e.target.tagName || '');
+      if(typeof S.tour === 'number' && !/INPUT|TEXTAREA|SELECT/.test(tag) && !e.target.isContentEditable && !document.querySelector('dialog[open]')) {
+        if(e.key === 'Escape') { e.preventDefault(); tourGo(-1); return; }
+        if(e.target.closest('.tour-guide') && ['ArrowLeft','ArrowRight'].includes(e.key)) { e.preventDefault(); tourGo(e.key === 'ArrowRight' ? (S.tour+1 < tour.length ? S.tour+1 : -1) : Math.max(0,S.tour-1)); return; }
+      }
       if(e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey && !/INPUT|TEXTAREA|SELECT/.test(tag) && !e.target.isContentEditable && !document.querySelector('dialog[open]')){
         e.preventDefault(); openGoTo();
       }

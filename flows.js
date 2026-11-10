@@ -238,38 +238,60 @@
   function f2Paint(body, ctx){
     const sel = apps[ctx.S.f2] ? ctx.S.f2 : 0, a = apps[sel], s = slugOf(a.n);
     const sent = (ctx.S.f2sent || []).includes(a.n);
-    const list = ui.table({cols:[{label:'Hakija'}, {label:'Kieli'}], rows: apps.map((x, k) => ({cls:`it${k === sel ? ' wf-table__row--selected' : ''}`, attrs:`data-k="${k}" tabindex="0"${k === sel ? ' aria-current="true"' : ''}`, cells:[
-      `<span class="brain-owner-tag">${ui.avatar(x.i)}<span><span class="wf-table__primary">${x.n}</span><span class="wf-table__secondary">${x.role} · klo ${x.time}</span></span></span>`, ui.pill(x.lang, 'info')]}))});
-    const detail = ui.card({title: a.n, extra:`${ui.pill('Alkuperäinen kieli: ' + a.lang, 'info')}${s ? ` <a href="#tekijat/${s}">Profiili tekijäpankissa</a>` : ''}`, body: pad(`
-      <div class="brain-form-pair">
-        <div class="growth-stack"><h3 class="brain-subheading">Alkuperäinen CV</h3><div class="wf-inset growth-prewrap cv">${a.cv.split('\n').map((t, i) => mark('cv' + i, t)).join('\n')}</div></div>
-        <div class="growth-stack ai"><h3 class="brain-subheading">Yhteenveto suomeksi</h3><p class="growth-muted">Avaa lähde, niin näet tiedon alkuperäisessä CV:ssä.</p>${ui.kv(a.sum.map(([k, v], i) => { const n = a.ln[i]; return [k, `${v} ${typeof n === 'number' ? src('cv' + n, `CV, rivi ${n + 1}`) : src('', n)}`]; }))}</div>
+    const list = apps.map((x, k) => `<button type="button" class="application-candidate it${k === sel ? ' is-selected' : ''}" data-k="${k}" aria-pressed="${k === sel}" aria-controls="f2-detail">
+      ${ui.avatar(x.i)}<span class="application-candidate__body"><strong>${x.n}</strong><span>${x.role}</span><small>${x.lang} · klo ${x.time}${(ctx.S.f2sent || []).includes(x.n) ? ' · Luonnos tallennettu' : ''}</small></span><span class="application-candidate__mark" aria-hidden="true">${k === sel ? icon('check') : ''}</span>
+    </button>`).join('');
+    const fields = a.sum.map(([label, value], i) => { const n = a.ln[i]; return `<div class="application-field"><dt>${label}</dt><dd>${value}</dd><dd class="application-field__source">${typeof n === 'number' ? src('cv' + n, `Näytä CV:n kohta`) : src('', n)}</dd></div>`; }).join('');
+    const detail = `<article class="application-workspace" aria-labelledby="application-name">
+      <header class="application-workspace__header"><div><h2 id="application-name" tabindex="-1">${a.n}</h2><p>${a.role} · Saapunut klo ${a.time}</p></div><div class="wf-cluster">${ui.pill('Hakemuksen kieli: ' + a.lang, 'neutral')}${s ? `<a href="#tekijat/${s}">Avaa työntekijäprofiili</a>` : ''}</div></header>
+      <div class="application-documents">
+        <section class="application-panel application-original" aria-labelledby="application-cv-title">
+          <header class="application-panel__header"><h3 id="application-cv-title">Alkuperäinen CV</h3><p>Hakijan tiedot alkuperäisellä kielellä.</p></header>
+          <div class="application-original__body cv" lang="${a.lang.toLowerCase()}">${a.cv.split('\n').map((t, i) => `<div class="application-cv-line">${mark('cv' + i, t)}</div>`).join('')}</div>
+        </section>
+        <section class="application-panel application-summary ai" aria-labelledby="application-summary-title">
+          <header class="application-panel__header"><h3 id="application-summary-title">Yhteenveto suomeksi</h3><p>Tarkista osaaminen. Lähdepainike näyttää vastaavan kohdan CV:ssä.</p></header>
+          <dl class="application-fields">${fields}</dl>
+        </section>
       </div>
-      ${rec(a.match[0][1] ? a.match[0][1] + ' %' : 'Ei', a.match[0][1] ? 'sopivuus' : 'paikkaa nyt', 'Suositus: ' + a.rec, [['ok', a.good], [a.ok ? 'ok' : 'warn', a.miss]])}
-      <h3 class="brain-subheading">Sopivuus avoimiin paikkoihin</h3>
-      <div class="growth-stack">${a.match.map(m => m[1] ? progress(m[0], m[1], 'score') : `<div class="wf-cluster"><span>${m[0]}</span><span class="score">${ui.pill('Tekijäpankkiin', 'neutral')}</span></div>`).join('')}</div>
-      <div class="wf-cluster"><h3 class="brain-subheading">Viestiluonnos hakijalle</h3>${ui.pill(a.draft.l, 'neutral')}</div>
-      ${draft(a.draft.t)}
-      ${a.draft.fi ? `<p class="growth-muted">${a.draft.fi}</p>` : ''}
-      <div class="wf-cluster">${ui.button({label: sent ? 'Luonnos tallennettu' : 'Tallenna viestiluonnos', variant:'primary', attrs:`data-f2-send${sent ? ' disabled' : ''}`})}<span class="growth-muted">Tarkista kieli ja ajankohta ennen lähettämistä.</span></div>`)});
-    body.innerHTML = `${ui.kpis([{label:'Uusia tällä viikolla', value:'37'}, {label:'Käsitelty', value:ctx.S.f2run ? '37' : '31'}, {label:'Kutsutaan haastatteluun', value:'9'}, {label:'Kieliä', value:'5', foot:'FI, SV, EN, PL, RO'}])}
-      <div class="wf-split"><div id="f2-detail">${ctx.S.f2run ? detail : `<div id="f2-run">${agentCard('Tekoälyavustaja', '6 hakemusta odottaa käsittelyä', 'Saat jokaisesta hakemuksesta suomenkielisen yhteenvedon, sopivat tehtävät ja viestiluonnoksen. Sinä päätät jatkosta.', F2_RUN, -1, ui.button({label:'Käsittele hakemukset (6)', variant:'primary', size:'md', attrs:'id="f2-go"'}))}</div>`}</div>${ui.card({flush:1, title:'Uudet hakemukset', meta: ctx.S.f2run ? 'käsitelty' : 'odottaa käsittelyä', body:`<div id="f2-list">${list}</div>`})}</div>`;
+      <section class="application-panel application-recommendation" aria-labelledby="application-recommendation-title">
+        <header class="application-panel__header"><h3 id="application-recommendation-title">Suositeltu seuraava vaihe</h3></header>
+        <div class="application-panel__body">
+          <p class="application-recommendation__decision">${a.rec}</p>
+          <p class="application-recommendation__reason">${a.good}.</p>
+          <div class="application-check${a.ok ? ' application-check--neutral' : ''}"><strong>${a.ok ? 'Huomioi jatkossa' : 'Tarkista ennen aloitusta'}</strong><p>${a.miss}</p></div>
+          <div class="application-matches"><h4>Sopivuus avoimiin tehtäviin</h4>${a.match.map(m => m[1] ? progress(m[0], m[1], 'score') : `<p class="growth-muted">${m[0]}. Säilytä hakemus hakijan suostumuksella.</p>`).join('')}</div>
+        </div>
+      </section>
+      <section class="application-panel application-message" aria-labelledby="application-message-title">
+        <header class="application-panel__header"><div><h3 id="application-message-title">Viestiluonnos hakijalle</h3><p>Tarkista sisältö ja ehdotettu ajankohta ennen lähettämistä.</p></div>${ui.pill(a.draft.l, 'info')}</header>
+        <div class="application-panel__body">
+          <div class="application-message__text growth-prewrap">${a.draft.t}</div>
+          ${a.draft.fi ? `<div class="application-message__translation"><h4>Suomenkielinen käännös</h4><p>${a.draft.fi.replace(/^Käännös: /, '')}</p></div>` : ''}
+          <div class="application-message__actions">${ui.button({label: sent ? 'Luonnos tallennettu' : 'Tallenna viestiluonnos', variant:'primary', attrs:`data-f2-send${sent ? ' disabled' : ''}`})}<span role="status">${sent ? 'Luonnos on tallessa. Viestiä ei ole lähetetty.' : 'Tallennus säilyttää luonnoksen myöhempää käyttöä varten.'}</span></div>
+        </div>
+      </section>
+    </article>`;
+    body.innerHTML = `<div class="applications-screen">
+      <section class="application-picker" aria-labelledby="application-picker-title"><header><div><h2 id="application-picker-title">Valitse hakija</h2><p>6 hakemusta · 5 kieltä</p></div><span>${(ctx.S.f2sent || []).length} / 6 luonnosta tallennettu</span></header><div id="f2-list" class="application-candidates">${list}</div></section>
+      <div id="f2-detail">${ctx.S.f2run ? detail : `<div id="f2-run">${agentCard('Tekoälyavustaja', '6 hakemusta odottaa käsittelyä', 'Saat jokaisesta hakemuksesta suomenkielisen yhteenvedon, sopivat tehtävät ja viestiluonnoksen. Valitse hakija tai käsittele kaikki hakemukset.', F2_RUN, -1, ui.button({label:'Käsittele hakemukset (6)', variant:'primary', size:'md', attrs:'id="f2-go"'}))}</div>`}</div>
+    </div>`;
   }
   const F2_RUN = ['Marek Z. (puola): yhteenveto valmis, työturvallisuuskortti tarkistettava', 'Sara N. (ruotsi): yhteenveto valmis, sopiva CNC-koneistajan tehtävään', 'Juha M. (suomi): SFS 6002 -koulutuksen voimassaolo tarkistettava', 'Ioana D. (romania): käännetty, trukkilupa tarkistettava', 'Liam O. (englanti): yhteenveto valmis, työturvallisuuskortti tarkistettava', 'Anna-Leena K. (suomi): ei avointa paikkaa, tekijäpankkiin'];
   D.screens.hakemukset = {
     header: () => ({eyebrow:'Työt', title:'Hakemusten seulonta', subtitle:'Vertaa hakijoiden osaamista tehtäviin ja valmistele yhteydenotto.'}),
     render(body, ctx){
       f2Paint(body, ctx);
-      const pick = k => { ctx.S.f2 = k; ctx.S.f2run = 1; ctx.save(); f2Paint(body, ctx); if(innerWidth < 1200) $('#f2-detail', body).scrollIntoView({behavior:'smooth', block:'start'}); };
+      const pick = k => { ctx.S.f2 = k; ctx.S.f2run = 1; ctx.save(); f2Paint(body, ctx); $('#application-name', body).focus({preventScroll:true}); $('#f2-detail', body).scrollIntoView({behavior:'instant', block:'start'}); };
       body.onclick = async e => {
         if(srcHit(body, e)) return;
         const go = e.target.closest('#f2-go');
         if(go){ go.disabled = true; if(!await runAgent($('#f2-run', body), 'Tekoälyavustaja', 'Käsitellään hakemuksia', 'Kuusi hakemusta, viisi kieltä. Jokaisesta yhteenveto suomeksi ja suositus.', F2_RUN)) return; ctx.S.f2run = 1; ctx.save(); return f2Paint(body, ctx); }
         const b = e.target.closest('[data-f2-send]');
-        if(b){ const n = apps[ctx.S.f2 || 0].n; ctx.S.f2sent = (ctx.S.f2sent || []).concat(n); ctx.save(); return f2Paint(body, ctx); }
+        if(b && !b.disabled){ const n = apps[ctx.S.f2 || 0].n; ctx.S.f2sent = Array.from(new Set((ctx.S.f2sent || []).concat(n))); ctx.save(); return f2Paint(body, ctx); }
         const r = e.target.closest('#f2-list .it'); if(r && !e.target.closest('a')) pick(+r.dataset.k);
       };
-      body.onkeydown = e => { const r = e.target.closest('#f2-list .it'); if(r && e.key === 'Enter') pick(+r.dataset.k); };
+      body.onkeydown = e => { const r = e.target.closest('#f2-list .it'); if(r && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')){ e.preventDefault(); const next = (+r.dataset.k + (e.key === 'ArrowRight' ? 1 : apps.length - 1)) % apps.length; $(`#f2-list [data-k="${next}"]`, body).focus(); } };
     },
   };
 
@@ -296,18 +318,12 @@
      fi:`Hei,\n\nkolmannen vuoron käynnistys on iso urakka. Voimme hoitaa koneenkäyttäjien haun ja perehdytyksen alun, niin teidän ei tarvitse.\n\nSopisiko puhelu?\n\nAntti Flander\nDobra Finland`,
      sv:`Hej,\n\natt starta ett tredje skift är ett stort jobb. Vi kan sköta rekryteringen av maskinoperatörer och introduktionen, så ni slipper.\n\nPassar det med ett samtal?\n\nAntti Flander\nDobra Finland`},
   ];
-  const PIPE = [
-    ['Yhteydessä', [['Larsmo Plåt Ab', 'Särmääjät keväälle', 'Odottaa vastausta'], ['Kauhavan Hallirakenne Oy', 'Asentajat hallityömaalle', 'Soita uudelleen ensi viikolla']]],
-    ['Tapaaminen', [['Nykarleby Montage Ab', 'Hitsaajat ja asentajat', 'Tapaaminen sovittu']]],
-    ['Tarjous', [['Botnia Mekaniikka Oy', '2 CNC-koneistajaa ja särmääjä', 'Luonnos odottaa Anttia', '#asiakkaat/botnia-mekaniikka']]],
-  ];
-  const deal = (n, t, next, href, cls) => `<li class="brain-deal-card${cls ? ' ' + cls : ''}">${href ? `<a class="brain-deal-card__company" href="${href}">${n}</a>` : `<span class="brain-deal-card__company">${n}</span>`}<span class="brain-deal-card__title">${t}</span><span class="brain-deal-card__next">${next}</span><span class="brain-deal-card__foot">${ui.avatar('AF')} Antti F.</span></li>`;
-  const col = (title, cards, id) => `<section class="brain-pipeline__column" role="listitem"><header class="brain-pipeline__head"><div class="brain-pipeline__name"><h2 class="brain-pipeline__title">${title}</h2><span class="brain-pipeline__count">${cards.length}</span></div></header><ul class="brain-pipeline__cards"${id ? ` id="${id}"` : ''}>${cards.join('')}</ul></section>`;
+  D.leads = leads;
   function f3Paint(body, ctx){
     const st = ctx.S.f3 = ctx.S.f3 && typeof ctx.S.f3 === 'object' ? ctx.S.f3 : {};
     if(!Array.isArray(st.pipe)) st.pipe = [];
     const sel = leads[st.sel] ? st.sel : 0, l = leads[sel], x = LEAD_EXTRA[sel], lang = st.lang === 'sv' ? 'sv' : 'fi';
-    const inPipe = st.pipe.includes(l.n);
+    const inPipe = st.pipe.includes(l.n) || SALES_OPPORTUNITIES.some(o => CLIENTS.find(c => c.s === o.client)?.n === l.n);
     const table = ui.table({id:'f3-table', cols:[{label:'Yritys'}, {label:'Henkilöstötarve'}, {label:'Sopivuus', num:1}], rows: leads.map((r, k) => ({cls: k === sel ? 'wf-table__row--selected' : '', attrs:`data-k="${k}" tabindex="0"${k === sel ? ' aria-current="true"' : ''}`, cells:[
       `<span class="wf-table__primary">${r.n}</span><span class="wf-table__secondary">${r.city} · ${r.ind}</span>`, `<span class="growth-muted">${r.sig}</span>`, `<span class="score">${r.s}</span>`]}))});
     const checks = list => `<ul class="growth-checks">${list.map(([p, t]) => `<li class="growth-checks__item">${p}<span class="growth-checks__text">${t}</span></li>`).join('')}</ul>`;
@@ -322,9 +338,9 @@
       <h3 class="brain-subheading">Yhteydenottoluonnos</h3>
       <nav class="wf-tabs tabs" aria-label="Viestin kieli"><ul class="wf-tabs__list">${[['fi', 'Suomeksi'], ['sv', 'Ruotsiksi']].map(([k, t]) => `<li class="wf-tabs__item"><button type="button" class="wf-tabs__tab" data-l="${k}"${lang === k ? ' aria-current="true"' : ''}>${t}</button></li>`).join('')}</ul></nav>
       ${draft(l[lang])}
-      <div class="wf-cluster">${ui.button({label: inPipe ? 'Lisätty myyntiputkeen' : 'Lisää myyntiputkeen', variant:'primary', attrs:`id="f3-add"${inPipe ? ' disabled' : ''}`})}${ui.button({label:'Kopioi viesti', attrs:'data-f3-copy'})}</div>`)});
-    const fresh = st.pipe.map(n => { const r = leads.find(y => y.n === n); return r ? deal(r.n, r.sig, 'Ensimmäinen viesti valmiina', '', 'k') : ''; });
-    const board = ui.card({title:'Myyntiputki', meta:'Seuraava toimi näkyy jokaisen yrityksen kohdalla', body: pad(`<div class="brain-pipeline" role="list">${col('Uusi', fresh, 'kan-new')}${PIPE.map(([t, cards]) => col(t, cards.map(c => deal(c[0], c[1], c[2], c[3])))).join('')}</div>`)});
+      <div class="wf-cluster">${inPipe ? ui.button({label:'Avaa myyntimahdollisuus', variant:'primary', href:'#myynti', attrs:'id="f3-open"'}) : ui.button({label:'Lisää myyntiputkeen', variant:'primary', attrs:'id="f3-add"'})}${ui.button({label:'Kopioi viesti', attrs:'data-f3-copy'})}</div>`)});
+    const prepared = st.pipe.filter(n => leads.some(l => l.n === n));
+    const board = ui.card({title:'Myynnin seuranta', body: pad(`<p>Seuraa kaikkia myyntimahdollisuuksia ja seuraavia tehtäviä myynnin näkymässä.</p>${prepared.length ? `<div><h3 class="brain-subheading">Lisäämäsi yritykset</h3><ul>${prepared.map(n => `<li>${D.h(n)}</li>`).join('')}</ul></div>` : ''}<div class="wf-cluster">${ui.button({label:'Avaa myynnin näkymä', href:'#myynti'})}</div>`)});
     body.innerHTML = `<div class="wf-chip-group"><span class="wf-chip wf-chip--static">Pohjanmaa, Keski-Pohjanmaa, Etelä-Pohjanmaa</span><span class="wf-chip wf-chip--static">Metalli, rakennus, teollisuuspalvelut</span><span class="wf-chip wf-chip--static">14 havaintoa tällä viikolla</span></div>
       ${st.run ? `<div class="wf-split">${ui.card({flush:1, title:'Potentiaaliset asiakkaat', meta:`${leads.length} yritystä, sopivimmat ensin`, body: table})}<div id="f3-detail">${detail}</div></div>` : `<div id="f3-run">${agentCard('Tekoälyavustaja', 'Kuka tarvitsee tekijöitä juuri nyt?', 'Tekoäly kokoaa työpaikkailmoituksista ja uutisista yritykset, joilla voi olla henkilöstötarve. Saat perustelut ja yhteydenottoluonnoksen.', F3_RUN, -1, ui.button({label:'Etsi potentiaaliset asiakkaat', variant:'primary', size:'md', attrs:'id="f3-go"'}))}</div>`}
       ${board}`;
@@ -342,7 +358,7 @@
         const tab = e.target.closest('#f3-detail .tabs button[data-l]');
         if(tab){ st().lang = tab.dataset.l; ctx.save(); return f3Paint(body, ctx); }
         const add = e.target.closest('#f3-add');
-        if(add){ const n = leads[st().sel || 0].n; if(!st().pipe.includes(n)) st().pipe.push(n); ctx.save(); return f3Paint(body, ctx); }
+        if(add){ const n = leads[st().sel || 0].n; const exists = SALES_OPPORTUNITIES.some(o => CLIENTS.find(c => c.s === o.client)?.n === n); if(!exists && !st().pipe.includes(n)) st().pipe.push(n); ctx.save(); D.syncSalesLeads?.(); return f3Paint(body, ctx); }
         const cp = e.target.closest('[data-f3-copy]');
         if(cp){ const l = leads[st().sel || 0]; try { await navigator.clipboard.writeText(l[st().lang === 'sv' ? 'sv' : 'fi']); cp.textContent = 'Kopioitu'; } catch(x) { cp.textContent = 'Kopiointi ei onnistunut'; } return; }
         const r = e.target.closest('#f3-table tbody tr'); if(r) pick(+r.dataset.k);
@@ -358,9 +374,10 @@
     return ui.card({title:'Tarjousluonnos', extra: ui.pill('Hinnat tarkistettava', 'warning'), body: pad(`
       <p class="growth-muted">Botnia Mekaniikka Oy · Sanna V. · voimassa 30 päivää</p>
       ${ui.table({cols:[{label:'Tehtävä'}, {label:'Määrä', num:1}, {label:'Alkaa'}, {label:'Kesto'}, {label:'€/h', num:1}], rows:[
-        ['CNC-koneistaja, kaksivuorotyö', '2', '4.1.2027', '6 kk', {cls:'price', html:'38,00'}],
-        ['Särmääjä, kaksivuorotyö', '1', '4.1.2027', '6 kk', {cls:'price', html:'36,50'}]],
+        ['CNC-koneistaja, kaksivuorotyö', String(BOTNIA_QUOTE.cncCount), '4.1.2027', `${BOTNIA_QUOTE.months} kk`, {cls:'price', html:BOTNIA_QUOTE.cncRate.toLocaleString('fi-FI',{minimumFractionDigits:2})}],
+        ['Särmääjä, kaksivuorotyö', String(BOTNIA_QUOTE.pressCount), '4.1.2027', `${BOTNIA_QUOTE.months} kk`, {cls:'price', html:BOTNIA_QUOTE.pressRate.toLocaleString('fi-FI',{minimumFractionDigits:2})}]],
         foot:[{cells:[{attrs:'colspan="5"', html:'<span class="growth-muted">Iltavuorolisä laskutetaan työehtosopimuksen mukaan</span>'}]}]})}
+      <div class="wf-inset"><p><strong>Arvioitu tilausarvo: ${((BOTNIA_QUOTE.cncCount * BOTNIA_QUOTE.cncRate + BOTNIA_QUOTE.pressCount * BOTNIA_QUOTE.pressRate) * BOTNIA_QUOTE.hoursPerMonth * BOTNIA_QUOTE.months).toLocaleString('fi-FI')} € (alv 0 %)</strong></p><p class="growth-muted">Laskentaoletus: ${BOTNIA_QUOTE.hoursPerMonth} tuntia tekijää kohden kuukaudessa, ${BOTNIA_QUOTE.months} kuukautta. Vuorolisät ja erikseen sovittavat kulut eivät sisälly arvioon. Varmista toteutuva työmäärä asiakkaan kanssa.</p></div>
       <h3 class="brain-subheading">Hintaan sisältyy</h3>
       <div class="wf-cluster">${['Haku ja haastattelut', 'Palkanmaksu ja sivukulut', 'Työterveys ja vakuutukset', 'Työsuhdeasiakirjat ja luvat', 'Majoitus erikseen sovittaessa'].map(t => ui.pill(t, 'neutral')).join('')}</div>
       <p><strong>Mahdollinen vakituinen työsuhde:</strong> sovi rekrytoinnin ehdot asiakkaan kanssa ennen tarjouksen lähettämistä.</p>

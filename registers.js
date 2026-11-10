@@ -146,7 +146,9 @@
 
   /* ASIAKKAAT */
   const onGig = c => WORKERS.filter(w => w.a && w.a[0] === c.s);
-  const cPill = c => ui.pill(c.st, /uusi/i.test(c.st) ? 'warning' : 'success');
+  const cPill = c => ui.pill(c.st, /tarjous|uusi/i.test(c.st) ? 'warning' : c.st === 'Asiakas' ? 'success' : c.st === 'Prospekti' ? 'info' : 'neutral');
+  const clientBackHref = ctx => `#asiakkaat${ctx.params.toString() ? "?" + ctx.params.toString() : ""}`;
+  const clientGroup = c => /tarjous|uusi/i.test(c.st) ? 'tarjous' : c.st === 'Asiakas' ? 'asiakas' : c.st === 'Tauolla' ? 'tauolla' : 'prospekti';
   // Saved workflow progress changes display status only; no message is sent here.
   const clientOrders = c => (c.open || []).map(([title, status, href]) => {
     const route = (href || '').split('?')[0];
@@ -155,17 +157,28 @@
     return {title, href, status: confirmed ? 'Vahvistus valmis' : reviewReady ? 'Valmis tarkistettavaksi' : status, completed: confirmed};
   });
   const openOrderCount = c => clientOrders(c).filter(o => !o.completed).length;
-  function clientList(body){
-    const gig = WORKERS.filter(w => w.a).length;
-    const rows = CLIENTS.map(c => { const g = onGig(c), next = g.map(w => w.a[2]).sort()[0]; return [
-      `<span class="wf-table__primary"><a href="#asiakkaat/${c.s}">${c.n}</a></span><span class="wf-table__secondary">${c.city} · ${c.ind}</span>`,
+  function clientList(body, ctx){
+    const query = (ctx.params.get('haku') || '').trim().toLocaleLowerCase('fi');
+    const group = ctx.params.get('tila') || '';
+    const list = CLIENTS.filter(c => (!group || clientGroup(c) === group) && (!query || [c.n,c.city,c.ind].join(' ').toLocaleLowerCase('fi').includes(query)));
+    const rows = list.map(c => { const g = onGig(c), next = g.map(w => w.a[2]).sort()[0]; return [
+      `<span class="wf-table__primary"><a href="#asiakkaat/${c.s}${ctx.params.toString() ? '?' + ctx.params.toString() : ''}">${c.n}</a></span><span class="wf-table__secondary">${c.city} · ${c.ind}</span>`,
       cPill(c), {cls:'wf-table__num', html: String(g.length)},
       next ? (days(next) <= 21 ? ui.pill(fd(next), 'warning') : fd(next)) : '<span class="growth-muted">ei keikkoja</span>',
       `${c.last[0]}<span class="wf-table__secondary">${c.last[1]}</span>`,
       {cls:'wf-table__num', html: String(openOrderCount(c))}]; });
     body.innerHTML = `
-      ${ui.kpis([{label:'Asiakkaita', value: String(CLIENTS.length), foot:'asiakasrekisterissä'}, {label:'Keikalla nyt', value: String(gig), foot:'tekijää asiakkailla'}, {label:'Sijoitettu tänä vuonna', value: String(CLIENTS.reduce((n, c) => n + (c.ytd ? +c.ytd[1] : 0), 0)), foot:'tekijää'}, {label:'Avoimia tilauksia', value: String(CLIENTS.reduce((n, c) => n + openOrderCount(c), 0))}])}
-      ${ui.card({flush:1, title:'Asiakkaat', meta:`${CLIENTS.length} asiakasta`, body: ui.table({id:'as-table', cols:[{label:'Asiakas'}, {label:'Tila'}, {label:'Keikalla', num:1}, {label:'Seuraava keikka päättyy'}, {label:'Viimeisin yhteys'}, {label:'Avoimia tilauksia', num:1}], rows})})}`;
+      ${ui.kpis([{label:'Yrityksiä', value: String(CLIENTS.length), foot:'asiakasrekisterissä'}, {label:'Asiakkaita', value: String(CLIENTS.filter(c=>clientGroup(c)==='asiakas').length), foot:'aktiivisia asiakkuuksia'}, {label:'Prospekteja', value: String(CLIENTS.filter(c=>clientGroup(c)==='prospekti').length), foot:'kartoituksessa tai kohdeyrityksenä'}, {label:'Avoimia tilauksia', value: String(CLIENTS.reduce((n, c) => n + openOrderCount(c), 0))}])}
+      <div class="client-register-filters"><div class="wf-field client-search-field"><label class="wf-field__label" for="client-search">Etsi yritystä</label><input id="client-search" class="wf-input" type="search" placeholder="Yritys, toimiala tai paikkakunta" value="${ctx.h(ctx.params.get('haku') || '')}"></div><div class="wf-field"><label class="wf-field__label" for="client-status">Asiakkuuden vaihe</label><select id="client-status" class="wf-select__control">${[['','Kaikki yritykset'],['asiakas','Asiakkaat'],['prospekti','Prospektit ja kohdeyritykset'],['tarjous','Tarjous avoinna'],['tauolla','Tauolla']].map(([v,label])=>`<option value="${v}"${group===v?' selected':''}>${label}</option>`).join('')}</select></div>${query || group ? ui.button({label:'Tyhjennä suodattimet',href:'#asiakkaat'}) : ''}</div>
+      ${ui.card({flush:1, title:'Yritykset', meta:`${list.length} yritystä · yhteensä ${CLIENTS.length}`, body: list.length ? ui.table({id:'as-table', cols:[{label:'Asiakas'}, {label:'Tila'}, {label:'Keikalla', num:1}, {label:'Seuraava keikka päättyy'}, {label:'Viimeisin yhteys'}, {label:'Avoimia tilauksia', num:1}], rows}) : pad(ui.empty({title:'Ei yrityksiä näillä ehdoilla',text:'Muuta hakua tai tyhjennä suodattimet.',actions:ui.button({label:'Tyhjennä suodattimet',href:'#asiakkaat'})}))})}`;
+    const update = (key, input) => {
+      const p = new URLSearchParams(ctx.params); if(input.value) p.set(key,input.value); else p.delete(key);
+      const cursor = input.selectionStart;
+      history.replaceState(null,'','#asiakkaat'+(p.toString()?'?'+p.toString():'')); D.rerender();
+      const next=document.getElementById(input.id); if(next){next.focus({preventScroll:true});if(cursor!=null) next.setSelectionRange(cursor,cursor);}
+    };
+    body.oninput=e=>{if(e.target.id==='client-search' && !e.isComposing) update('haku',e.target);};
+    body.onchange=e=>{if(e.target.id==='client-status') update('tila',e.target);};
   }
   function clientPage(body, c){
     const g = onGig(c);
@@ -185,29 +198,30 @@
         <div class="growth-stack">
           ${ui.card({flush:1, title:'Keikalla nyt', body: gigT})}
           ${ui.card({flush:1, title:'Tilaukset', meta:`${openOrderCount(c)} avointa`, body: open})}
-          ${ui.card({title:'Vuoden aikana sijoitetut tekijät', body: pad(placed.length ? `<div class="wf-cluster">${placed.map(w => `<a class="wf-chip" href="#tekijat/${w.s}">${w.n}</a>`).join('')}</div>` : '<p class="growth-muted">Ei vielä sijoituksia.</p>')})}
+          ${ui.card({title:'Vuoden aikana sijoitetut tekijät', body: pad(placed.length ? `<div class="wf-cluster">${placed.map(w => `<a class="wf-chip" href="#tekijat/${w.s}">${w.n}</a>`).join('')}</div>` : `<p class="growth-muted">${c.ytd && Number(c.ytd[1]) > 0 ? 'Vuoden tekijäkohtaisia tietoja ei ole lisätty.' : 'Ei vielä sijoituksia.'}</p>`)})}
         </div>
         <div class="growth-stack">
-          ${ui.card({title:'Yhteystiedot ja viimeisin yhteys', body: pad(ui.kv([['Yhteyshenkilö', c.who], ['Paikkakunta', c.city], ['Toimiala', c.ind], ['Asiakkaana', c.since ? `vuodesta ${c.since}` : 'uusi'], ['Viimeisin yhteys', `${c.last[0]}, ${c.last[1]}`]]))})}
+          ${ui.card({title:'Yhteystiedot ja viimeisin yhteys', body: pad(ui.kv([['Yhteyshenkilö', c.who], ['Paikkakunta', c.city], ['Toimiala', c.ind], ['Asiakkaana', c.since ? `vuodesta ${c.since}` : 'Ei vielä asiakkuutta'], ['Viimeisin yhteys', c.last[0] && c.last[0] !== '—' ? `${c.last[0]}, ${c.last[1]}` : c.last[1]]]))})}
+          ${typeof SALES_OPPORTUNITIES !== 'undefined' && SALES_OPPORTUNITIES.some(o=>o.client===c.s) ? ui.card({title:'Myyntimahdollisuus', body:pad(SALES_OPPORTUNITIES.filter(o=>o.client===c.s).map(o=>`<p><strong>${o.title}</strong></p><p>${o.next} · ${fd(o.due)}</p><a href="#myynti?vaihe=${o.stage}">Avaa myynnin näkymä</a>`).join(''))}) : ''}
           ${ui.card({title:'Muistiinpanot', body: pad((c.notes || []).length ? `<ul class="brain-bullets">${c.notes.map(n => `<li>${n}</li>`).join('')}</ul>` : '<p class="growth-muted">Ei muistiinpanoja.</p>')})}
-          <section class="wf-card brain-company-timeline"><header class="wf-card__header"><h2 class="wf-card__title">Tapahtumat</h2></header>${pad(ui.activity(ev.map(e => ({title: e[1], meta: fd(e[0]) + (days(e[0]) > 0 ? ', tulossa' : ''), tone: e[2]}))))}</section>
+          <section class="wf-card brain-company-timeline"><header class="wf-card__header"><h2 class="wf-card__title">Tapahtumat</h2></header>${pad(ev.length ? ui.activity(ev.map(e => ({title: e[1], meta: fd(e[0]) + (days(e[0]) > 0 ? ', tulossa' : ''), tone: e[2]}))) : '<p class="growth-muted">Ei kirjattuja tapahtumia.</p>')}</section>
         </div>
       </div>`;
   }
   D.screens.asiakkaat = {
     header(ctx){
       if(ctx.sub){
-        const c = client(ctx.sub); if(!c) return {eyebrow:'<a href="#asiakkaat">Asiakkaat</a>', title:'Asiakasta ei löytynyt'};
-        return {eyebrow:'<a href="#asiakkaat">Asiakkaat</a>', title: c.n, subtitle:`${c.city} · ${c.ind}`, actions:cPill(c)};
+        const c = client(ctx.sub); if(!c) return {eyebrow:`<a href="${clientBackHref(ctx)}">Takaisin asiakasrekisteriin</a>`, title:'Asiakasta ei löytynyt'};
+        return {eyebrow:`<a href="${clientBackHref(ctx)}">Takaisin asiakasrekisteriin</a>`, title: c.n, subtitle:`${c.city} · ${c.ind}`, actions:cPill(c)};
       }
-      return {eyebrow:'Rekisterit', title:'Asiakkaat', subtitle:'Tarkista asiakkuuden tilanne, tekijät ja avoimet tilaukset.'};
+      return {eyebrow:'Rekisterit', title:'Asiakkaat', subtitle:'Asiakkaat, prospektit ja kohdeyritykset. Löydä yritys ja jatka oikeasta kohdasta.'};
     },
     render(body, ctx){
       body.onchange = null;
       body.oninput = null;
-      if(!ctx.sub) return clientList(body);
+      if(!ctx.sub) return clientList(body, ctx);
       const c = client(ctx.sub);
-      if(!c){ body.innerHTML = ui.empty({title:'Asiakasta ei löytynyt', text:'Linkki voi olla vanha.', actions: ui.button({label:'Takaisin asiakkaisiin', href:'#asiakkaat'})}); return; }
+      if(!c){ body.innerHTML = ui.empty({title:'Asiakasta ei löytynyt', text:'Linkki voi olla vanha.', actions: ui.button({label:'Takaisin asiakkaisiin', href:clientBackHref(ctx)})}); return; }
       clientPage(body, c);
     },
   };

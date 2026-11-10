@@ -42,3 +42,24 @@ Keeping their natural heights avoids a large blank area in the shorter panel.
 - Quote availability lists the proposed workers instead of unsupported totals.
 
 Final syntax and browser checks passed. No JavaScript page errors occurred in the tested paths.
+
+
+## Follow-up: tour, sales and application readability
+
+| Before | After | Why |
+| --- | --- | --- |
+| Tour appeared as a small notice | Large 13-step guide with progress, jump selector, task highlight and compact mode | Instructions remain readable while users try tasks |
+| Original CV and summary sat inside nested columns | Full-width workspace with separate document panels | More space for text and source links |
+| Source chips interrupted translated values | Field label, value and source each have a clear row | Faster reading and verification |
+| Sales had an isolated small board | Shared sales overview with stage bars, monthly trend and next actions | One place to understand and continue sales work |
+| Seven company records | Twenty company scenarios, searchable by name, industry and place | More varied CRM demonstrations |
+| Similar colors across all tasks | Blue recruitment, purple applications, amber checks and green sales cues | Color reinforces visible text labels |
+| Quote and pipeline values were unrelated | Shared rates, headcount, months and explicit hours assumption | Totals agree across views |
+
+Reference: Traficom console tour, reviewed 10 November 2026. Adopted step navigation, progress,
+role context and section highlighting. The Dobra guide uses larger in-page typography and can collapse.
+The final step returns to the work rather than resetting completed tasks.
+
+New browser coverage checks all 13 tour steps at 1440, 768, 390 and 320 pixels, resume after reload,
+source highlighting, six candidates, saved drafts, sales stage filters, period selection and company links.
+Sales and CRM data remain sample scenarios. Named Finnish companies are marked as targets.

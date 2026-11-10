@@ -148,6 +148,19 @@ const CLIENTS = [
    placed:[],
    open:[['Tarjouspyyntö: 2 CNC-koneistajaa ja 1 särmääjä 4.1.2027 alkaen, 6 kk','Luonnos odottaa','#tarjoukset']],
    notes:['Liidi 3.11. Ensimmäinen tarjous tälle asiakkaalle.','Hyville tekijöille voi löytyä vakituinen paikka.']},
+  {"s": "vaasan-akselitekniikka", "n": "Vaasan Akselitekniikka Oy", "city": "Vaasa", "ind": "Metalliteollisuus", "st": "Prospekti", "who": "Tuotannosta vastaava henkilö", "last": ["ma 9.11.", "Tarpeen kartoitus valmistelussa"], "since": null, "ytd": [0, 0, "0"], "placed": [], "open": [], "notes": ["Selvitä hitsaajien tarve ja toivottu aloitusaika."]},
+  {"s": "nordvik-putkisto", "n": "Nordvik Putkisto Oy", "city": "Pietarsaari", "ind": "Teollisuusasennukset", "st": "Tarjous avoinna", "who": "Projektipäällikkö", "last": ["pe 6.11.", "Asennusprojektin vaatimukset kirjattu"], "since": null, "ytd": [0, 0, "0"], "placed": [], "open": [], "notes": ["Tarkista putkiasentajien pätevyydet ja matkustusvalmius."]},
+  {"s": "lakeuden-pakkaamo", "n": "Lakeuden Pakkaamo Oy", "city": "Seinäjoki", "ind": "Elintarvikepakkaaminen", "st": "Asiakas", "who": "Tuotannon työnjohto", "last": ["ma 9.11.", "Talvikauden työvuorot käsittelyssä"], "since": 2025, "ytd": [2, 4, "1 280"], "placed": [], "open": [], "notes": ["Aamuvuorot alkavat klo 6. Hygieniapassi tarvitaan."]},
+  {"s": "kokkolan-kunnossapito", "n": "Kokkolan Kunnossapito Oy", "city": "Kokkola", "ind": "Teollisuuden kunnossapito", "st": "Tarjous avoinna", "who": "Kunnossapitopäällikkö", "last": ["pe 6.11.", "Huoltoseisokin laajuus täsmennetty"], "since": null, "ytd": [0, 0, "0"], "placed": [], "open": [], "notes": ["Sovi työryhmän koko ja työturvallisuuden vaatimukset."]},
+  {"s": "aurajoen-kokoonpano", "n": "Aurajoen Kokoonpano Oy", "city": "Turku", "ind": "Kokoonpanoteollisuus", "st": "Prospekti", "who": "Henkilöstöstä vastaava henkilö", "last": ["to 5.11.", "Ensimmäisen keskustelun valmistelu"], "since": null, "ytd": [0, 0, "0"], "placed": [], "open": [], "notes": ["Kartoita kokoonpanon osaamisvaatimukset."]},
+  {"s": "pirkan-varastointi", "n": "Pirkan Varastointi Oy", "city": "Tampere", "ind": "Varastologistiikka", "st": "Asiakas", "who": "Varaston työnjohto", "last": ["ti 3.11.", "Sesongin ennakkosuunnittelu"], "since": 2024, "ytd": [3, 6, "2 100"], "placed": [], "open": [], "notes": ["Vuorotyö ja trukin ajotaito ovat olennaisia."]},
+  {"s": "saariston-rakennuspalvelu", "n": "Saariston Rakennuspalvelu Oy", "city": "Parainen", "ind": "Rakentaminen", "st": "Tauolla", "who": "Työpäällikkö", "last": ["pe 23.10.", "Seuraava tarve keväällä"], "since": 2023, "ytd": [1, 2, "720"], "placed": [], "open": [], "notes": ["Palaa kevään työmaihin tammikuussa."]},
+  {"s": "pohjolan-pintakasittely", "n": "Pohjolan Pintakäsittely Oy", "city": "Oulu", "ind": "Pintakäsittely", "st": "Prospekti", "who": "Tuotannon työnjohto", "last": ["ma 9.11.", "Osaamisvaatimusten kartoitus"], "since": null, "ytd": [0, 0, "0"], "placed": [], "open": [], "notes": ["Tarkista ruiskumaalauksen ja esikäsittelyn kokemus."]},
+  {"s": "hameen-koneosat", "n": "Hämeen Koneosat Oy", "city": "Hämeenlinna", "ind": "Koneistus", "st": "Tarjous avoinna", "who": "Tuotantopäällikkö", "last": ["pe 6.11.", "CNC-osaamisen vaatimukset koottu"], "since": null, "ytd": [0, 0, "0"], "placed": [], "open": [], "notes": ["Tarvittava ohjausjärjestelmä on Fanuc."]},
+  {"s": "savon-terminaali", "n": "Savon Terminaali Oy", "city": "Kuopio", "ind": "Kuljetus ja logistiikka", "st": "Asiakas", "who": "Terminaalin työnjohto", "last": ["to 5.11.", "Joulukuun kapasiteetti tarkistettavana"], "since": 2025, "ytd": [2, 3, "960"], "placed": [], "open": [], "notes": ["Ilta- ja yövuoroja. Varmista kulkeminen työpaikalle."]},
+  {"s": "wartsila", "n": "Wärtsilä", "city": "Suomi", "ind": "Meri- ja energiateknologia", "st": "Kohdeyritys", "who": "Ei nimettyä yhteyshenkilöä", "last": ["—", "Ei yhteydenottoa"], "since": null, "ytd": [0, 0, "0"], "placed": [], "open": [], "website": "https://www.wartsila.com/about", "notes": ["Kohdeyritys. Selvitä sopiva toimipaikka ja yhteyshenkilö ennen yhteydenottoa."]},
+  {"s": "valmet", "n": "Valmet", "city": "Suomi", "ind": "Prosessiteollisuuden teknologia", "st": "Kohdeyritys", "who": "Ei nimettyä yhteyshenkilöä", "last": ["—", "Ei yhteydenottoa"], "since": null, "ytd": [0, 0, "0"], "placed": [], "open": [], "website": "https://www.valmet.com/company/", "notes": ["Kohdeyritys. Selvitä sopiva toimipaikka ja yhteyshenkilö ennen yhteydenottoa."]},
+  {"s": "posti", "n": "Posti", "city": "Suomi", "ind": "Logistiikka", "st": "Kohdeyritys", "who": "Ei nimettyä yhteyshenkilöä", "last": ["—", "Ei yhteydenottoa"], "since": null, "ytd": [0, 0, "0"], "placed": [], "open": [], "website": "https://www.posti.com/en", "notes": ["Kohdeyritys. Selvitä sopiva toimipaikka ja yhteyshenkilö ennen yhteydenottoa."]},
 ];
 
 /* Liidien lähdeteksti ja sopivuus (samassa järjestyksessä kuin leads index.html:ssä). */
@@ -206,4 +219,46 @@ const ANSWERS = [
         ['Majoitukset','Dobran asunto, Kokkola','Nykyinen asukas muuttaa pois 15.11. Vapaa 16.11. alkaen, 1 huone.','päivitetty 9.11.'],
         ['Hakemus','Marek Z., avoin hakemus, klo 2.14','Dostępny: od 1.12.2026 (käännös: vapaa 1.12.2026 alkaen)','alkuperäinen kieli puola']],
    next:['Avaa Tomasz W.','#tekijat/tomasz-w']},
+];
+
+
+/* Myynnin havainnollistavat mahdollisuudet ja tilaukset. Arvot euroina, alv 0 %.
+   Oikeat nimet ovat vain kohdeyrityksiä: ei väitettä asiakkuudesta tai yhteydenotosta.
+   Julkiset toimialalähteet, tarkistettu 10.11.2026:
+   https://www.wartsila.com/about ; https://www.valmet.com/company/ ; https://www.posti.com/en */
+const BOTNIA_QUOTE = {cncCount:2,cncRate:38,pressCount:1,pressRate:36.5,hoursPerMonth:160,months:6};
+const SALES_OPPORTUNITIES = [
+  {client:'wartsila', stage:'new', value:42000, title:'Teollisuuden henkilöstötarpeen kartoitus', next:'Tunnista sopiva toimipaikka', due:'2026-11-16'},
+  {client:'valmet', stage:'new', value:36000, title:'Teknisen henkilöstön kohdeyritys', next:'Etsi oikea yhteyshenkilö', due:'2026-11-17'},
+  {client:'posti', stage:'new', value:18000, title:'Logistiikan kohdeyritys', next:'Rajaa sopiva toimipaikka', due:'2026-11-18'},
+  {client:'vaasan-akselitekniikka', stage:'need', value:22400, title:'Neljä hitsaajaa tuotantoon', next:'Tarkenna aloitusaika ja pätevyydet', due:'2026-11-10'},
+  {client:'aurajoen-kokoonpano', stage:'need', value:16800, title:'Kokoonpanon lisätekijät', next:'Käy osaamisvaatimukset läpi', due:'2026-11-12'},
+  {client:'pohjolan-pintakasittely', stage:'need', value:12600, title:'Pintakäsittelyn työpari', next:'Varmista maalausmenetelmä', due:'2026-11-13'},
+  {client:'nordvik-putkisto', stage:'offer', value:28800, title:'Putkiasentajat projektiin', next:'Viimeistele työn laajuus', due:'2026-11-11'},
+  {client:'kokkolan-kunnossapito', stage:'offer', value:19200, title:'Huoltoseisokin työryhmä', next:'Tarkista työajat ja pätevyydet', due:'2026-11-10'},
+  {client:'hameen-koneosat', stage:'offer', value:15600, title:'CNC-koneistaja', next:'Vahvista ohjausjärjestelmän osaaminen', due:'2026-11-12'},
+  {client:'botnia-mekaniikka', stage:'offer', value:(BOTNIA_QUOTE.cncCount*BOTNIA_QUOTE.cncRate+BOTNIA_QUOTE.pressCount*BOTNIA_QUOTE.pressRate)*BOTNIA_QUOTE.hoursPerMonth*BOTNIA_QUOTE.months, title:'2 CNC-koneistajaa ja 1 särmääjä · 6 kk', assumption:`${BOTNIA_QUOTE.hoursPerMonth} h/tekijä/kk · ${BOTNIA_QUOTE.months} kk`, next:'Tarkista tarjousluonnos', due:'2026-11-10'},
+  {client:'lakeuden-pakkaamo', stage:'decision', value:9600, title:'Talvikauden pakkaajat', next:'Sovi aloituspäivä', due:'2026-11-11'},
+  {client:'pirkan-varastointi', stage:'decision', value:14400, title:'Sesongin varastotiimi', next:'Varmista vuorojen jako', due:'2026-11-12'},
+  {client:'savon-terminaali', stage:'decision', value:8400, title:'Joulukuun terminaalityö', next:'Kysy päätöksen aikataulu', due:'2026-11-13'},
+];
+const SALES_ORDERS = [
+  {client:'pohjan-terasrakenne', date:'2026-06-05', value:18400},
+  {client:'luodon-levytekniikka', date:'2026-06-19', value:12600},
+  {client:'kvarkenin-maalaustyo', date:'2026-06-26', value:6800},
+  {client:'kaustisen-tarkkuuskone', date:'2026-07-03', value:16800},
+  {client:'pirkan-varastointi', date:'2026-07-17', value:9200},
+  {client:'kvarkenin-maalaustyo', date:'2026-07-24', value:10200},
+  {client:'pohjan-terasrakenne', date:'2026-08-07', value:24600},
+  {client:'kruunupyyn-varastopalvelu', date:'2026-08-14', value:12600},
+  {client:'lakeuden-pakkaamo', date:'2026-08-28', value:8400},
+  {client:'luodon-levytekniikka', date:'2026-09-04', value:20800},
+  {client:'kaustisen-tarkkuuskone', date:'2026-09-18', value:18200},
+  {client:'seinajoen-sahkomontaasi', date:'2026-09-25', value:8600},
+  {client:'pohjan-terasrakenne', date:'2026-10-02', value:22400},
+  {client:'pirkan-varastointi', date:'2026-10-16', value:14800},
+  {client:'savon-terminaali', date:'2026-10-23', value:12800},
+  {client:'luodon-levytekniikka', date:'2026-11-03', value:16800},
+  {client:'lakeuden-pakkaamo', date:'2026-11-06', value:9600},
+  {client:'kruunupyyn-varastopalvelu', date:'2026-11-09', value:12600},
 ];
